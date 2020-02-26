@@ -54,7 +54,9 @@ public class UIButton : MonoBehaviour
     {
         if (target == null) return;
 
-        Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, target.transform.position + offset);
-        rect.position = new Vector3(v.x, v.y, 0);
+        //Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, target.transform.position + offset);
+        //rect.position = new Vector3(v.x, v.y, 0);
+        Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, target.transform.position);
+        rect.position = new Vector3(v.x + offset.x, v.y + offset.y, 0);
     }
 }

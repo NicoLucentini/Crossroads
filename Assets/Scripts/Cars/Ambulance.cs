@@ -27,7 +27,7 @@ public class Ambulance : Car
         ui.SetMain(icon);
         ui.SetMask(icon);
         ui.target = transform;
-        ui.SetOffset(new Vector3(0, 3, 0));
+        //ui.SetOffset(new Vector3(0, 3, 0));
         StartCoroutine(CTWaitTime(maxWaitTime));
         StartCoroutine(CTHaloAnim());
     }

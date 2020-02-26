@@ -41,7 +41,7 @@ public class Taxi : Car
         taxiInstruction.SetText("TAP TO LEAVE STOP");
         taxiInstruction.Show(false, false, true);
         taxiInstruction.target = transform;
-        taxiInstruction.offset = new Vector3(0, 8, 0);
+        taxiInstruction.offset = new Vector3(0, 172, 0);
 
         GameManager.instance.ManageTime(0);
         yield return new WaitForSecondsRealtime(5);
@@ -73,7 +73,7 @@ public class Taxi : Car
         taxiButton = GuiManager.instance.InstantiateUIButton();
         taxiButton.target = transform;
         taxiButton.SetOnClick(OnClickButton);
-        taxiButton.SetOffset(new Vector3(0, 1, 0));
+        taxiButton.SetOffset(new Vector3(0, 24, 0));
 
         if (!taxiFirstTime)
             StartCoroutine(CTInstruction());

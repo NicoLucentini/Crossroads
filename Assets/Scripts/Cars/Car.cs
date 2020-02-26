@@ -86,7 +86,8 @@ public class Car : MonoBehaviour
         speed = 0;
         brokenButton = GuiManager.instance.InstantiateUIButton();
         brokenButton.SetOnClick(UnbreakCar);
-        brokenButton.SetOffset(new Vector3(0, 2, 0));
+        brokenButton.SetOffset(new Vector3(0, 24, 0));
+       // brokenButton.SetOffset(new Vector3(0, 128, 0));
         brokenButton.SetImage(breakSprite);
         brokenButton.ShowText(false);
         brokenButton.target = transform;
@@ -100,7 +101,7 @@ public class Car : MonoBehaviour
             brokenInstruction.SetText("TAP TO FIX CAR");
             brokenInstruction.Show(false, false, true);
             brokenInstruction.target = transform;
-            brokenInstruction.offset = new Vector3(0, 8, 0);
+            brokenInstruction.SetOffset(new Vector3(0, 172, 0));
 
             GameManager.instance.ManageTime(0);
             yield return new WaitForSecondsRealtime(5);

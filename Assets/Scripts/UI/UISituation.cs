@@ -13,7 +13,7 @@ public class UISituation : MonoBehaviour
 
     [Header("Status")]
     public Transform target;
-    public Vector3 offset = new Vector3(0, 3, 0);
+    public Vector3 offset = new Vector3(0, 64, 0);
 
     [Header("Settings")]
     public bool fitScreen;
@@ -71,13 +71,17 @@ public class UISituation : MonoBehaviour
     {
         if (target == null) return;
 
-        Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, target.transform.position + offset);
-        rect.position = new Vector3(v.x, v.y, 0);
+        Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, target.transform.position );
+        //rect.position = new Vector3(v.x, v.y, 0);
+        rect.position = new Vector3(v.x + offset.x, v.y + offset.y, 0);
     }
     public void SetPos(Vector3 pos)
     {
-        Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, pos + offset);
-        rect.position = new Vector3(v.x, v.y, 0);
+        // Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, pos + offset);
+        //rect.position = new Vector3(v.x, v.y, 0);
+
+        Vector2 v = RectTransformUtility.WorldToScreenPoint(Camera.main, pos);
+        rect.position = new Vector3(v.x + offset.x, v.y + offset.y, 0);
     }
     public void Anim()
     {

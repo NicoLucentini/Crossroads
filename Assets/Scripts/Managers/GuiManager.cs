@@ -54,11 +54,7 @@ public class GuiManager : MonoBehaviour
         continueButton.SetActive(contin);
     }
 
-    public UISituation InstantiateUISituation()
-    {   
-        GameObject uiGO = GameObject.Instantiate(uiSituationPrefab, gameCanvas);
-        return uiGO.GetComponent<UISituation>();
-    }
+   
     public void ClearAchievment()
     {
         foreach (var a in uiAchievment)
@@ -100,6 +96,11 @@ public class GuiManager : MonoBehaviour
     public UISituation InstantiateUIInstructionEmpty()
     {
         GameObject uiGO = GameObject.Instantiate(uiInstructionPrefab, gameCanvas);
+        return uiGO.GetComponent<UISituation>();
+    }
+    public UISituation InstantiateUISituation()
+    {
+        GameObject uiGO = GameObject.Instantiate(uiSituationPrefab, gameCanvas);
         return uiGO.GetComponent<UISituation>();
     }
 

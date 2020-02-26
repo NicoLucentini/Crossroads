@@ -21,7 +21,7 @@ public class UIProfile : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.onLoadComplete += OnProfileLoad;
+        //GameManager.onLoadComplete += OnProfileLoad;
     }
 
   

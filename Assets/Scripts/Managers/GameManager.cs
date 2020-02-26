@@ -107,7 +107,8 @@ public class GameManager : MonoBehaviour
     public Text pointsText;
     public Text achievmentRewardText;
     public Text achievmentLevelText;
-
+    public InputField registerInputfield;
+    public Text hiText;
     [Header("XpTable")]
     public List<int> xpTable;
     public int profileMaxLevel = 25;
@@ -179,9 +180,13 @@ public class GameManager : MonoBehaviour
 
     void UpdateAfterLoadData()
     {
-        print("UpdateAfterLoadData" + (profile == null ));
-       if(profile != null)
-            UpdateProfileUI();     
+       print("UpdateAfterLoadData" + (profile == null ));
+        if (profile != null)
+            UpdateProfileUI();
+        else {
+            SwitchScreen(GameStatus.SIGN_IN);
+        }
+        
     }
 
 
@@ -311,6 +316,7 @@ public class GameManager : MonoBehaviour
     {
         SwitchScreen(GameStatus.MODE_SELECTION);
         uiProfile.ChangeRecordTransit("Record " +  profile.maxScoreTransit);
+        hiText.text = "Hi, " + profile.playerName;
       //uiProfile.ChangeLoginText("Welcome " + profile.playerName);
     }
 
@@ -368,7 +374,10 @@ public class GameManager : MonoBehaviour
 
             profile = bf.Deserialize(fs) as Profile;
             fs.Close();
-          
+
+        }
+        else {
+            profile = null;
         }
         onLoadComplete?.Invoke();
     }
@@ -377,8 +386,21 @@ public class GameManager : MonoBehaviour
 
     #region UI handlers
 
+    public void Register() {
+
+        profile = new Profile();
+        profile.idUser = Random.Range(0, 123);
+        profile.registered = "Registered";        
+        profile.playerName = registerInputfield.text;
+        hiText.text = "Hi, " + profile.playerName;
+        SaveData();
+        SwitchScreen(GameStatus.MODE_SELECTION);
+    }
+
+
+
     //QUIT GAME SE LLAMA CON EL BOTON O CON LA TECLA DE ATRAS
-  
+
     public void MainMenuFromShop()
     {
         SwitchScreen(GameStatus.MODE_SELECTION);
