@@ -8453,7 +8453,7 @@ MonoBehaviour:
   shopGo: {fileID: 1688970804}
   gameLights: {fileID: 1547893}
   current: {fileID: 1062916738}
-  adGo: {fileID: 0}
+  adGo: {fileID: 1881631841}
   pauseImage: {fileID: 836413203}
   pauseText: {fileID: 948065049}
   freeCoinsBut: {fileID: 0}
@@ -18470,8 +18470,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreEndGame: {fileID: 1692758737}
-  coinsEndGame: {fileID: 0}
-  xpEndGame: {fileID: 0}
   newRecordGo: {fileID: 11340139}
   endgameText: {fileID: 2137815479}
   restartButton: {fileID: 1241446542}
