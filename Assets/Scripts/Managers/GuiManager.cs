@@ -9,8 +9,8 @@ public class GuiManager : MonoBehaviour
 
     [Header("End game")]
     public Text scoreEndGame;
-    public Text coinsEndGame;
-    public Text xpEndGame;
+    //public Text coinsEndGame;
+    //public Text xpEndGame;
     public GameObject newRecordGo;
     public Text endgameText;
     public GameObject restartButton;
@@ -44,8 +44,8 @@ public class GuiManager : MonoBehaviour
 
     public void ChangeCoinsAndXp(string c, string xp)
     {
-        coinsEndGame.text = "+ " + c;
-        xpEndGame.text = "+ " + xp;
+     //   coinsEndGame.text = "+ " + c;
+    //xpEndGame.text = "+ " + xp;
     }
 
     public void ShowRestartAndContinue(bool restart, bool contin)
