@@ -12,17 +12,23 @@ public class TimerManager : MonoBehaviour
     public static System.Action onTimePassed;
 
     public UnityEngine.UI.Text timerText;
-
+    bool pause = false;
     private void Start()
-    {
-        GameManager.onGameEnd += DeactivateTimer;
+    {   
+        //GameManager.onGameStart += DeactivateTimer;
         GameManager.onGameStart += ActivateTimer;
+        GameManager.onGameEnd += () => Pause(true);
+        GameManager.onGameResume += () => Pause(false);
     }
 
 
     private void ActivateTimer() {
-        if (countingCT != null)
+
+        /*if (countingCT != null)
             StopCoroutine(countingCT);
+            */
+        Pause(false);
+        DeactivateTimer();
 
         countingCT = StartCoroutine(StartCounting());
         InvokeRepeating("FireEvent", fireEventInterval, fireEventInterval);
@@ -33,18 +39,25 @@ public class TimerManager : MonoBehaviour
 
         CancelInvoke("FireEvent");
     }
-
+    public void Pause(bool pause)
+    {
+        this.pause = pause;
+    }
     void FireEvent() {
         if (onTimePassed != null)
             onTimePassed(); 
     }
     IEnumerator StartCounting() {
         gameTimer = 0;
+        timerText.text = "Time: " + gameTimer.ToString("n2");
         while (true)
         {
-            gameTimer += Time.deltaTime;
-            timerText.text = "Time: " + gameTimer.ToString("n2");
-            yield return new WaitForEndOfFrame();
+            if (!pause)
+            {
+                gameTimer += Time.deltaTime;
+                timerText.text = "Time: " + gameTimer.ToString("n2");
+                yield return new WaitForEndOfFrame();
+            }
         }
     }
 }

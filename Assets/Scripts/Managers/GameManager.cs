@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     #region EVENTS
     public static System.Action onGameEnd;
     public static System.Action onGameStart;
+    public static System.Action onGameResume;
     public static System.Action onLoadComplete;
     public static System.Action onScore;
     #endregion
@@ -57,7 +58,7 @@ public class GameManager : MonoBehaviour
     public UIProfile uiProfile;
     public TimerManager timerManager;
     public GuiManager guiManager;
-
+    public GameServicesMgr gameServicesManager;
 
     Dictionary<GameMode, GameReward> rewards = new Dictionary<GameMode, GameReward>();
 
@@ -167,7 +168,8 @@ public class GameManager : MonoBehaviour
         if (skyboxSwitcher == null) skyboxSwitcher = FindObjectOfType<SkyboxSwitcher>();
         if (uiProfile == null) uiProfile = FindObjectOfType<UIProfile>();
         if (spawner == null) spawner = FindObjectOfType<CarSpawner>();
-     
+        if (gameServicesManager == null) gameServicesManager = FindObjectOfType<GameServicesMgr>();
+
     }
 
     public void ManageTime(float timeValue)
@@ -539,8 +541,8 @@ public class GameManager : MonoBehaviour
 
         bool newRecord = CheckAndUpdateScore();
         Debug.Log("New Record ? " + newRecord);
-       
 
+        gameServicesManager.ReportScore(score);
         guiManager.ChangeNewRecord(newRecord);
 
         SwitchScreen(GameStatus.END_GAME);
@@ -565,6 +567,7 @@ public class GameManager : MonoBehaviour
         gameIsRunning = true;
         spawner.enabled = true;
         controller.enabled = true;
+        onGameResume?.Invoke();
     }
 
     #endregion
