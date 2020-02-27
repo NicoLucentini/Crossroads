@@ -44,8 +44,7 @@ public class TimerManager : MonoBehaviour
         this.pause = pause;
     }
     void FireEvent() {
-        if (onTimePassed != null)
-            onTimePassed(); 
+        onTimePassed?.Invoke();
     }
     IEnumerator StartCounting() {
         gameTimer = 0;
