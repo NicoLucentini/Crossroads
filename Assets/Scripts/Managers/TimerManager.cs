@@ -25,7 +25,7 @@ public class TimerManager : MonoBehaviour
     private void ActivateTimer() {
 
         /*if (countingCT != null)
-            StopCoroutine(countingCT);
+            StopCoroutine(countingCT);}
             */
         Pause(false);
         DeactivateTimer();
