@@ -20,6 +20,7 @@ public class OldMan : MonoBehaviour
     {
         speed = baseSpeed;
         paths = FindObjectOfType<WalkingPaths>();
+        GameManager.onGameStart += Init;
     }
 
     public void Init()

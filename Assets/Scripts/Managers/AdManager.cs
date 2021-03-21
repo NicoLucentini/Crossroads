@@ -8,7 +8,6 @@ using UnityEngine.Advertisements;
 
 public class AdManager : MonoBehaviour
 {
-    public static AdManager instance;
 
     public delegate void OnPositiveResult();
     public event OnPositiveResult onPositiveResult;
@@ -19,15 +18,6 @@ public class AdManager : MonoBehaviour
     public int freeCoinsCDInMinutes = 60;
     public bool adView = false;
 
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(this);
-
-        DontDestroyOnLoad(this);
-    }
 
     void Start ()
     {   

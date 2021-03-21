@@ -16,19 +16,22 @@ public class MyLeaderBoard : MonoBehaviour
 
     private int playerId;
 
-    private List<GameObject> leaderboardItems = new List<GameObject>(); 
+    private List<GameObject> leaderboardItems = new List<GameObject>();
 
-    private void Start()
+
+    public void Awake()
     {
-        //LoadData();
-       
+        PlayerManager.onLoadComplete += SetPlayerId;
     }
-    public void SetPlayerId(int playerId) {
-        this.playerId = playerId;
+
+
+    public void SetPlayerId(Profile profile) {
+        Debug.Log($"# MyLeaderBoard @SetPlayerId {profile.idUser}");
+        playerId = profile.idUser;
         UpdateUIData();
     }
 
-    void UpdateUIData() {
+    public void UpdateUIData() {
         LoadData();
         DestoyLeaderboardItems();
         
@@ -47,9 +50,13 @@ public class MyLeaderBoard : MonoBehaviour
             }
             for (int i = 0; i < maxData - 2; i++)
             {
+                
                 int pos = myIdPos - startPos + i;
-                var item = orderedScore[pos];
-                CreateUIItem(item, pos);
+                if (pos < orderedScore.Count)
+                {
+                    var item = orderedScore[pos];
+                    CreateUIItem(item, pos);
+                }
             }
         }
         else{
@@ -60,6 +67,7 @@ public class MyLeaderBoard : MonoBehaviour
             }
         }
     }
+
     public void DestoyLeaderboardItems() {
         for (int i = 0; i < leaderboardItems.Count; i++) {
             Destroy(leaderboardItems[i]);
@@ -76,8 +84,9 @@ public class MyLeaderBoard : MonoBehaviour
 
     public void LoadData()
     {
+        
         string response = WebRequestHelper.DoWebRequest(urlLeaderBoard, "GET");
-        Debug.Log("response: " + response);
+        Debug.Log($"#MyLeaderBoard @LoadData: {urlLeaderBoard} \n Response: {response}"  );
         data = JsonUtility.FromJson<LeaderBoardData>(response);
     }
 

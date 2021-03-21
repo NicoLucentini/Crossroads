@@ -91,9 +91,9 @@ public class Shop : MonoBehaviour
             
             GameManager.instance.profile.points -= spawn.unblockCost;
             moneyText.text = "Points " + GameManager.instance.profile.points;
-            if(onCarBuyed != null)
-                onCarBuyed();
-            GameManager.instance.SaveData();
+            
+            onCarBuyed?.Invoke();
+            GameManager.instance.playerManager.SaveLocalData();
         }
     }
 }
