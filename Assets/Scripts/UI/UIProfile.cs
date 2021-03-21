@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+//Refactorizar toda esta clase luego
 public class UIProfile : MonoBehaviour
 {
     public Text maxScoreTransit;
@@ -42,14 +44,15 @@ public class UIProfile : MonoBehaviour
         }
         else
         {
-            OnLoginSuccesfull();
-            //esto es que entra al menu...
+            onLoginSuccesfull?.Invoke();
         }
     }
+
     void RefreshCdSignIn()
     {
         cdSignIn = false;
     }
+
     public void OnClickSignIn()
     {
         if (cdSignIn) return;
@@ -59,11 +62,12 @@ public class UIProfile : MonoBehaviour
         if (onClickSign != null)
             onClickSign();
     }
+
     void PhpSignIn()
     {
         if (skipOnlineSignin)
         {
-            OnLoginSuccesfull();
+            onLoginSuccesfull?.Invoke();
             return;
         }
 
@@ -90,16 +94,11 @@ public class UIProfile : MonoBehaviour
         register.gameObject.SetActive(false);
         ///ChangeLoginText("Welcome, " + GameManager.instance.profile.playerName);
 
-        GameManager.instance.SaveData();
-        OnLoginSuccesfull();
+
+        onLoginSuccesfull?.Invoke();
+        
     }
 
-    void OnLoginSuccesfull()
-    {
-        GameManager.instance.SwitchScreen(GameStatus.MODE_SELECTION);
-        if (onLoginSuccesfull != null)
-            onLoginSuccesfull();
-    }
 
 
    

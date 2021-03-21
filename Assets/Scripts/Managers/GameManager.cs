@@ -22,12 +22,26 @@ public enum GameStatus
     IN_GAME, // DURING GAME
     END_GAME, //AFTER LOSING
 }
+[System.Serializable]
+public class GameStats {
+     [ReadOnly] public int ambulanceCount;
+    [ReadOnly] public int taxiCount;
+    [ReadOnly] public int firefighterCount;
+    [ReadOnly] public int policeCount;
+    [ReadOnly] public int oldmanCount;
+    [ReadOnly] public int carPassed;
+    [ReadOnly] public int normalCarsCount;
+    [ReadOnly] public int score;
+    [ReadOnly] public int carFixedCount;
+    [ReadOnly] public int timer;
 
+}
 public class GameReward
 {
     public GameReward(float xp, float coins)
     {
-        this.xp = xp;this.coins = coins;
+        this.xp = xp;
+        this.coins = coins;
     }
     public float xp;
     public float coins;
@@ -59,6 +73,9 @@ public class GameManager : MonoBehaviour
     public TimerManager timerManager;
     public GuiManager guiManager;
     public GameServicesMgr gameServicesManager;
+    public ScreenManager screenManager;
+    public PlayerManager playerManager;
+    public MyLeaderBoard myLeaderboard;
 
     Dictionary<GameMode, GameReward> rewards = new Dictionary<GameMode, GameReward>();
 
@@ -66,40 +83,24 @@ public class GameManager : MonoBehaviour
     public List<Barrier> barriers;
 
     [Header("Status")]
-    [ReadOnly]public bool isPaused;
-    [ReadOnly]public bool gameIsRunning = false;
+    [ReadOnly] public bool isPaused;
+    [ReadOnly] public bool gameIsRunning = false;
     public float cdTap = .5f;
-    [ReadOnly]public bool tapEnabled = true;
+    [ReadOnly] public bool tapEnabled = true;
     public static float globalCarSpeed;
     public GameMode mode;
     public GameStatus status = GameStatus.MODE_SELECTION;
 
-   
-    [Header("Stats")]
-    [ReadOnly]public int ambulanceCount;
-    [ReadOnly]public int taxiCount;
-    [ReadOnly]public int firefighterCount;
-    [ReadOnly]public int policeCount;
-    [ReadOnly]public int oldmanCount;
-    [ReadOnly]public int carPassed;
-    [ReadOnly]public int normalCarsCount;
-    [ReadOnly]public int score;
-    [ReadOnly]public int carFixedCount;
-    //ui
-    [Header("UI")]
 
-    [Header("Ui Screens")]
-    public GameObject signIn;
-    public GameObject modeSelect;
-    public GameObject tapAndScore;
-    public GameObject game;
-    public GameObject endGame;
-    public GameObject shopGo;
-    
+    [Header("Stats")]
+   
+
+    [ReadOnly] public GameStats stats;
+
+    [Header("UI")]
 
     [Header("Ui Others")]
     public GameObject gameLights;
-    public GameObject current;
     public GameObject adGo;
     public Image pauseImage;
     public Text pauseText;
@@ -114,12 +115,9 @@ public class GameManager : MonoBehaviour
     public List<int> xpTable;
     public int profileMaxLevel = 25;
 
-    
-    [Header("Ad")]
+
     public int gameCount;
-    public int gamesPlayedForAd = 3;
-    public int freeCoinsCDInMinutes = 60;
-    public bool adView = false;
+
 
     [Header("Game settings")]
     [Space(10)]
@@ -141,23 +139,24 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         if (instance == null) instance = this;
-       
+
+        CacheManagers();
+
         profile.playerName = "Player " + Random.Range(0, 100);
 
         //realTimeManager.onDateLoaded += UpdateFreeCoinsButton;
         onLoadComplete += UpdateAfterLoadData;
+        UIProfile.onLoginSuccesfull += OnLoginSuccesful;
 
         rewards.Add(GameMode.CAREER, new GameReward(0.5f, .5f));
         rewards.Add(GameMode.TRANSIT, new GameReward(0.5f, .5f));
         rewards.Add(GameMode.NO_BRAKES, new GameReward(.75f, .75f));
-
-       
     }
-    
-    public void Start()
-    {
-        LoadData();
-
+    void OnLoginSuccesful() {
+        SaveData();
+        SwitchScreen(GameStatus.MODE_SELECTION);
+    }
+    void CacheManagers() {
         if (guiManager == null) guiManager = FindObjectOfType<GuiManager>();
         if (controller == null) controller = FindObjectOfType<GameController>();
         if (realTimeManager == null) realTimeManager = FindObjectOfType<RealtimeManager>();
@@ -169,7 +168,16 @@ public class GameManager : MonoBehaviour
         if (uiProfile == null) uiProfile = FindObjectOfType<UIProfile>();
         if (spawner == null) spawner = FindObjectOfType<CarSpawner>();
         if (gameServicesManager == null) gameServicesManager = FindObjectOfType<GameServicesMgr>();
+        if (screenManager == null) screenManager = FindObjectOfType<ScreenManager>();
+        if (playerManager == null) playerManager = FindObjectOfType<PlayerManager>();
+        if (myLeaderboard == null) myLeaderboard = FindObjectOfType<MyLeaderBoard>();
+    }
 
+    public void Start()
+    {
+        LoadData();
+        ResetStats();
+    
     }
 
     public void ManageTime(float timeValue)
@@ -182,10 +190,15 @@ public class GameManager : MonoBehaviour
 
     void UpdateAfterLoadData()
     {
-       print("UpdateAfterLoadData" + (profile == null ));
+       Debug.Log("UpdateAfterLoadData" + (profile == null ));
+
         if (profile != null)
+        {
             UpdateProfileUI();
-        else {
+            myLeaderboard.SetPlayerId(profile.idUser);
+        }
+        else
+        {
             SwitchScreen(GameStatus.SIGN_IN);
         }
         
@@ -244,6 +257,7 @@ public class GameManager : MonoBehaviour
 
     public void OnCarCollision()
     {
+        Debug.Log("@OnCarCollision");
         //PERDISTE
         if (gameIsRunning)
         {
@@ -256,8 +270,7 @@ public class GameManager : MonoBehaviour
     public int growValue = 100;
     public void AddReward(int reward)
     {
-        score += reward;
-
+        stats.score += reward;
         growScore += reward;
 
         if (growScore > growValue)
@@ -268,33 +281,35 @@ public class GameManager : MonoBehaviour
         }
         
 
-        guiManager.ChangeScore(score.ToString());
+        guiManager.ChangeScore(stats.score.ToString());
     }
     public void OnCarPassed(int rewards, CarType cType)
     {
         AddReward(rewards);
-        carPassed++;
+        stats.carPassed++;
 
-       
-        if (cType == CarType.AMBULANCE)
-            ambulanceCount++;
-        else if (cType == CarType.COPS)
-            policeCount++;
-        else if (cType == CarType.BOMBERS)
-            firefighterCount++;
-        else if (cType == CarType.TAXI)
-            taxiCount++;
-        else
-            normalCarsCount++;
+        switch (cType)
+        {
+            case CarType.AMBULANCE:
+                stats.ambulanceCount++;break;
+            case CarType.COPS:
+                stats.policeCount++; break;
+            case CarType.BOMBERS:
+                stats.firefighterCount++; break;
+            case CarType.TAXI:
+                stats.taxiCount++; ; break;
+            default:
+                stats.normalCarsCount++;break;
 
+        }
     }
    
     public void OnOldManPassed(int reward)
     {
-        score += reward;
-        oldmanCount++;
+        stats.score += reward;
+        stats.oldmanCount++;
 
-        guiManager.ChangeScore(score.ToString());
+        guiManager.ChangeScore(stats.score.ToString());
        
     }
 
@@ -322,37 +337,30 @@ public class GameManager : MonoBehaviour
       //uiProfile.ChangeLoginText("Welcome " + profile.playerName);
     }
 
-    bool CheckAndUpdateScore()
+    bool IsRecord(int newScore, int oldScore)
     {
-      
-        Debug.Log("Score " + score + ", profile record " + profile.maxScoreTransit);
-        if (score > profile.maxScoreTransit)
-        {
-
-            Debug.Log("recoooooord Score " + score + ", profile record " + profile.maxScoreTransit);
-            profile.maxScoreTransit = score;
-            uiProfile.ChangeRecordTransit("RECORD " + profile.maxScoreTransit);
-            return true;
-        }
-        return false;
+        return newScore > oldScore;
     }
 
     void CheckAdCount()
     {
-        if (gameCount % gamesPlayedForAd == 0)
+        if (gameCount % AdManager.instance.gamesPlayedForAd == 0)
             AdManager.instance.AdShow(() => { print("Ad View"); });
     }
 
-    void ResetCounts()
+    void ResetStats()
     {
-        oldmanCount = 0;
-        taxiCount = 0;
-        ambulanceCount = 0;
-        policeCount = 0;
-        firefighterCount = 0;
-        normalCarsCount = 0;
-        score = 0;
-        carPassed = 0;
+        stats = new GameStats
+        {
+            oldmanCount = 0,
+            taxiCount = 0,
+            ambulanceCount = 0,
+            policeCount = 0,
+            firefighterCount = 0,
+            normalCarsCount = 0,
+            score = 0,
+            carPassed = 0
+        };
     }
     #endregion
 
@@ -361,26 +369,11 @@ public class GameManager : MonoBehaviour
     
     public void SaveData()
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream fs = new FileStream(Application.persistentDataPath + "/player.sav", FileMode.Create);
-
-        bf.Serialize(fs,profile);
-        fs.Close();
+        SaveManager.SaveData(Application.persistentDataPath + "/player.sav", profile);
     }
     public void LoadData()
     {
-        if (File.Exists(Application.persistentDataPath + "/player.sav"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream(Application.persistentDataPath + "/player.sav", FileMode.Open);
-
-            profile = bf.Deserialize(fs) as Profile;
-            fs.Close();
-
-        }
-        else {
-            profile = null;
-        }
+        profile = SaveManager.LoadData<Profile>(Application.persistentDataPath + "/player.sav");
         onLoadComplete?.Invoke();
     }
 
@@ -391,10 +384,15 @@ public class GameManager : MonoBehaviour
     public void Register() {
 
         profile = new Profile();
-        profile.idUser = Random.Range(0, 123);
+        
         profile.registered = "Registered";        
         profile.playerName = registerInputfield.text;
         hiText.text = "Hi, " + profile.playerName;
+
+        int id = playerManager.CreatePlayer(profile.playerName);
+        profile.idUser = id;
+
+
         SaveData();
         SwitchScreen(GameStatus.MODE_SELECTION);
     }
@@ -489,19 +487,8 @@ public class GameManager : MonoBehaviour
     //CAMBIA LA PANTALLA DEL MENU
     public void SwitchScreen(GameStatus s)
     {
-        current.SetActive(false);
         status = s;
-        switch (s)
-        {
-            case GameStatus.MODE_SELECTION: current = modeSelect; break;
-            case GameStatus.TAP_TO_PLAY: current = tapAndScore; break;
-            case GameStatus.IN_GAME: current = game; break;
-            case GameStatus.END_GAME: current = endGame; break;
-            case GameStatus.SHOP: current = shopGo;break;
-            case GameStatus.SIGN_IN: current = signIn; break;
-        }
-
-        current.SetActive(true);
+        screenManager.SwitchScreen(s);
     }
     #endregion
 
@@ -511,23 +498,22 @@ public class GameManager : MonoBehaviour
     {
         print("OnGameStart");
 
-        if (onGameStart != null)
-            onGameStart();
+        onGameStart?.Invoke();
 
         Time.timeScale = 1;
 
         gameCount++;
         CheckAdCount();
-        ResetCounts();
+        ResetStats();
 
         guiManager.ChangeTapToStart(false);
         guiManager.ChangeScoreActive(true);
-        guiManager.ChangeScore(score.ToString());
+        guiManager.ChangeScore(stats.score.ToString());
         spawner.OnReset();
         spawner.enabled = true;
         controller.enabled = true;
         controller.SetOnTap();
-        adView = false;
+        AdManager.instance.adView = false;
         gameIsRunning = true;
         FindObjectOfType<OldMan>().Init();
         skyboxSwitcher.SetSkybox();
@@ -538,30 +524,47 @@ public class GameManager : MonoBehaviour
     
     public void OnEndGame(bool won)
     {
-
-        bool newRecord = CheckAndUpdateScore();
-        Debug.Log("New Record ? " + newRecord);
-
-        gameServicesManager.ReportScore(score);
-        guiManager.ChangeNewRecord(newRecord);
-
-        SwitchScreen(GameStatus.END_GAME);
-        if(!won)
-            adGo.SetActive(!adView);
         Time.timeScale = 0;
         gameIsRunning = false;
+        Debug.Log($"@OnEndGame {won}");
+
+        bool newRecord = IsRecord(stats.score, profile.maxScoreTransit);
+
+        if (newRecord)
+        { 
+            profile.maxScoreTransit = stats.score;
+            playerManager.UpdatePlayer(profile.idUser, stats.score);
+            uiProfile.ChangeRecordTransit("RECORD " + profile.maxScoreTransit);
+        }
+
+
+        //gameServicesManager.ReportScore(score);
+
+        SwitchScreen(GameStatus.END_GAME);
+
+        guiManager.ChangeNewRecord(newRecord);
+
+        /*
+        if (!won)
+            adGo.SetActive(!adView);
+            */
+        Debug.Log($"@OnEndGame Pre Time Scale");
+     
         spawner.enabled = false;
         controller.enabled = false;
-
-        onGameEnd.Invoke();
+        Debug.Log($"@OnEndGame Post Time Scale");
+        onGameEnd?.Invoke();
+       // Time.timeScale = 0;
+        Debug.Log($"@OnEndGame Post Invoke");
         SaveData();
+        Debug.Log($"@OnEndGame Post Save");
 
     }
     
     public void OnResumeGame()
     {
         SwitchScreen(GameStatus.IN_GAME);
-        adView = true;
+        AdManager.instance.adView = true;
         Time.timeScale = 1;
         spawner.OnReset();
         gameIsRunning = true;

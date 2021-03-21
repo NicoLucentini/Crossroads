@@ -12,7 +12,12 @@ public class AdManager : MonoBehaviour
 
     public delegate void OnPositiveResult();
     public event OnPositiveResult onPositiveResult;
-    
+
+
+    [Header("Ad")]
+    public int gamesPlayedForAd = 3;
+    public int freeCoinsCDInMinutes = 60;
+    public bool adView = false;
 
     private void Awake()
     {

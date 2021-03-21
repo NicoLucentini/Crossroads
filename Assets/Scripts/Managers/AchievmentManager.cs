@@ -35,7 +35,7 @@ public class AchievmentManager : MonoBehaviour
         return null;
     }
 
-    public bool CheckAchievment(int index, GameManager mgr)
+    public bool CheckAchievment(int index, GameStats stats)
     {
         AchievmentUnit current = achievments[index];
 
@@ -47,9 +47,9 @@ public class AchievmentManager : MonoBehaviour
             switch (a.type)
             {
                 case AchievmentType.POINTS:
-                    if (mgr.score < a.value)
+                    if (stats.score < a.value)
                     {
-                        a.ui.SetText("points " + (a.value - mgr.score).ToString());
+                        a.ui.SetText("points " + (a.value - stats.score).ToString());
                         completed &= false;
                         continue;
                     }
@@ -59,9 +59,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.TIME:
-                    if (mgr.spawner.timer < a.value)
+                    if (stats.timer < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.spawner.timer).ToString("n1"));
+                        a.ui.SetText((a.value - stats.timer).ToString("n1"));
                         completed &= false;
                         continue;
                     }
@@ -71,9 +71,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.AMBULANCE:
-                    if (mgr.ambulanceCount < a.value)
+                    if (stats.ambulanceCount < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.ambulanceCount).ToString());
+                        a.ui.SetText((a.value - stats.ambulanceCount).ToString());
                         completed &= false;
                         continue;
                     }
@@ -83,9 +83,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.POLICE:
-                    if (mgr.policeCount < a.value)
+                    if (stats.policeCount < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.policeCount).ToString());
+                        a.ui.SetText((a.value - stats.policeCount).ToString());
                         completed &= false;
                         continue;
                     }
@@ -95,9 +95,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.FIREFIGHTER:
-                    if (mgr.firefighterCount < a.value)
+                    if (stats.firefighterCount < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.firefighterCount).ToString());
+                        a.ui.SetText((a.value - stats.firefighterCount).ToString());
                         completed &= false;
                         continue;
                     }
@@ -107,10 +107,10 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.TAXI:
-                    a.ui.SetText((a.value - mgr.taxiCount).ToString());
-                    if (mgr.taxiCount >= a.value)
+                    a.ui.SetText((a.value - stats.taxiCount).ToString());
+                    if (stats.taxiCount >= a.value)
                     {
-                        a.ui.SetText((a.value - mgr.taxiCount).ToString());
+                        a.ui.SetText((a.value - stats.taxiCount).ToString());
                         completed &= false;
                         continue;
                     }
@@ -120,9 +120,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.OLDMAN:
-                    if (mgr.oldmanCount < a.value)
+                    if (stats.oldmanCount < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.oldmanCount).ToString());
+                        a.ui.SetText((a.value - stats.oldmanCount).ToString());
                         completed &= false;
                         continue;
                     }
@@ -132,9 +132,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.NORMALCAR:
-                    if (mgr.normalCarsCount < a.value)
+                    if (stats.normalCarsCount < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.normalCarsCount).ToString());
+                        a.ui.SetText((a.value - stats.normalCarsCount).ToString());
                         completed &= false;
                         continue;
                     }
@@ -144,9 +144,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.TOTALCARS:
-                    if (mgr.carPassed < a.value)
+                    if (stats.carPassed < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.carPassed).ToString());
+                        a.ui.SetText((a.value - stats.carPassed).ToString());
                         completed &= false;
                         continue;
                     }
@@ -156,9 +156,9 @@ public class AchievmentManager : MonoBehaviour
                     }
                     break;
                 case AchievmentType.FIX:
-                    if (mgr.carFixedCount < a.value)
+                    if (stats.carFixedCount < a.value)
                     {
-                        a.ui.SetText((a.value - mgr.carFixedCount).ToString());
+                        a.ui.SetText((a.value - stats.carFixedCount).ToString());
                         completed &= false;
                         continue;
                     }

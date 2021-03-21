@@ -48,9 +48,12 @@ public class Car : MonoBehaviour
     public GameObject particleFire;
 
 
+    bool canCollide = true;
+
     public virtual void Start()
     {
         GameManager.onGameEnd += OnGameEnd;
+        canCollide = true;
     }
     public virtual void Init()
     {
@@ -120,9 +123,7 @@ public class Car : MonoBehaviour
             Destroy(brokenInstruction.gameObject);
 
         Destroy(firePart);
-        GameManager.instance.carFixedCount++;
-
-        
+        GameManager.instance.stats.carFixedCount++;
 
         if (brokenButton != null)
             Destroy(brokenButton.gameObject);
@@ -272,10 +273,13 @@ public class Car : MonoBehaviour
     #region COLLISION/TRIGGER
     public int lastRay;    
 
-    protected  void OnCollisionEnter(Collision collision)
+    public  void OnCollisionEnter(Collision collision)
     {
+        if (!canCollide) return;
+
         if (collision.gameObject.layer == Layers.BARRIER)
         {
+            canCollide = false;
             if (collision.gameObject.GetComponent<Barrier>().direction == dir)
             {
                 if (GameManager.instance.mode == GameMode.NO_BRAKES)
@@ -293,7 +297,8 @@ public class Car : MonoBehaviour
 
         if (collision.gameObject.layer == Layers.CARS )
         {
-        
+            Debug.Log("@OnCarCollision");
+            canCollide = false;
             GameManager.instance.OnCarCollision();
             if(timeAlive> 2)
                 GuiManager.instance.ChangeEndGameText("DONT LET CARS CRASH!!!");
@@ -301,7 +306,8 @@ public class Car : MonoBehaviour
                 GuiManager.instance.ChangeEndGameText("DONT LET CARS STACK!!!");
         }
         if (collision.gameObject.layer == Layers.PEOPLE)
-        {          
+        {
+            canCollide = false;
             GameManager.instance.OnCarCollision();
             GuiManager.instance.ChangeEndGameText("DONT CRASH  PEOPLE!!!");
         }

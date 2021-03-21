@@ -16,7 +16,4 @@ public class Profile
     public List<bool> blockedData;
     public int idUser = -1;
     public string registered = "false";
-
-
-    
 }

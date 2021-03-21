@@ -17,8 +17,8 @@ public class TimerManager : MonoBehaviour
     {   
         //GameManager.onGameStart += DeactivateTimer;
         GameManager.onGameStart += ActivateTimer;
-        GameManager.onGameEnd += () => Pause(true);
-        GameManager.onGameResume += () => Pause(false);
+        //GameManager.onGameEnd += () => Pause(true);
+        //GameManager.onGameResume += () => Pause(false);
     }
 
 
