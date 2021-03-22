@@ -5,12 +5,13 @@ using System.Linq;
 
 public class ScreenManager : MonoBehaviour
 {
-    public GameObject current;
+    [ReadOnly]private GameObject current;
 
+    #pragma warning disable 0649
     [SerializeField] private List<ScreenItem> screens;
-    
-    public void SwitchScreen(GameStatus status) {
+    #pragma warning restore 0649
 
+    public void SwitchScreen(GameStatus status) {
         current?.SetActive(false);
         current = screens.Find(x => x.status == status).screen;
         current?.SetActive(true);

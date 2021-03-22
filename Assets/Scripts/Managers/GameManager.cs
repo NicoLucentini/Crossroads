@@ -16,7 +16,7 @@ public enum GameMode
 public enum GameStatus
 {
     SIGN_IN,
-    MODE_SELECTION, //REPLACES IN FUTURE WITH MAIN MENU
+    MAIN_MENU, //REPLACES IN FUTURE WITH MAIN MENU
     SHOP,//SHOP
     TAP_TO_PLAY, // TAP TO PLAY
     IN_GAME, // DURING GAME
@@ -34,7 +34,6 @@ public class GameStats {
     [ReadOnly] public int score;
     [ReadOnly] public int carFixedCount;
     [ReadOnly] public int timer;
-
 }
 public class GameReward
 {
@@ -89,12 +88,12 @@ public class GameManager : MonoBehaviour
     [ReadOnly] public bool tapEnabled = true;
     public static float globalCarSpeed;
     public GameMode mode;
-    public GameStatus status = GameStatus.MODE_SELECTION;
+    public GameStatus status = GameStatus.MAIN_MENU;
 
+    public int gameCount;
 
     [Header("Stats")]
    
-
     [ReadOnly] public GameStats stats;
 
     [Header("UI")]
@@ -109,15 +108,10 @@ public class GameManager : MonoBehaviour
     public Text pointsText;
     public Text achievmentRewardText;
     public Text achievmentLevelText;
-    public InputField registerInputfield;
-    public Text hiText;
+
     [Header("XpTable")]
     public List<int> xpTable;
     public int profileMaxLevel = 25;
-
-
-    public int gameCount;
-
 
     [Header("Game settings")]
     [Space(10)]
@@ -154,7 +148,7 @@ public class GameManager : MonoBehaviour
     void OnLoginSuccesful(Profile profile) {
         Debug.Log("@OnLoginSuccesful");
         playerManager.SaveLocalData();
-        SwitchScreen(GameStatus.MODE_SELECTION);
+        SwitchScreen(GameStatus.MAIN_MENU);
     }
 
     void UpdateAfterLoadData(Profile profile)
@@ -164,7 +158,7 @@ public class GameManager : MonoBehaviour
         if (profile != null)
         {
             this.profile = profile;
-            UpdateProfileUI();
+            playerManager.UpdatePlayerUI();
         }
         else
         {
@@ -225,8 +219,8 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             if (status == GameStatus.SHOP)
-                SwitchScreen(GameStatus.MODE_SELECTION);
-            else if (status == GameStatus.MODE_SELECTION)
+                SwitchScreen(GameStatus.MAIN_MENU);
+            else if (status == GameStatus.MAIN_MENU)
                 QuitGame();
         }
        
@@ -326,17 +320,10 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        UpdateProfileUI();
+       // UpdateProfileUI();
 
     }
 
-    void UpdateProfileUI()
-    {
-        SwitchScreen(GameStatus.MODE_SELECTION);
-        playerManager.ChangeRecordTransit("Record " +  profile.maxScoreTransit);
-        hiText.text = "Hi, " + profile.playerName;
-      //uiProfile.ChangeLoginText("Welcome " + profile.playerName);
-    }
 
     bool IsRecord(int newScore, int oldScore)
     {
@@ -370,7 +357,7 @@ public class GameManager : MonoBehaviour
 
     public void MainMenuFromShop()
     {
-        SwitchScreen(GameStatus.MODE_SELECTION);
+        SwitchScreen(GameStatus.MAIN_MENU);
     }
 
     //QUIT GAME SE LLAMA CON EL BOTON O CON LA TECLA DE ATRAS
@@ -418,7 +405,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ResetTapCt());
 
         playerManager.SaveLocalData();
-        SwitchScreen(GameStatus.MODE_SELECTION);
+        SwitchScreen(GameStatus.MAIN_MENU);
     }
 
     public void OnClickRestart()
@@ -504,7 +491,7 @@ public class GameManager : MonoBehaviour
         { 
             profile.maxScoreTransit = stats.score;
             playerManager.UpdatePlayer(profile.idUser, stats.score);
-            playerManager.ChangeRecordTransit("RECORD " + profile.maxScoreTransit);
+            guiManager.ChangeRecordTransit("RECORD " + profile.maxScoreTransit);
             myLeaderboard.UpdateUIData();
         }
 

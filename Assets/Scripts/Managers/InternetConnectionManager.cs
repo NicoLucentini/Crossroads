@@ -20,8 +20,7 @@ public class InternetConnectionManager : MonoBehaviour
         {
             if (isOnline)
             {
-                if (onInternetDisconnected != null)
-                    onInternetDisconnected();
+                onInternetDisconnected?.Invoke();
             }
 
             isOnline = false;
@@ -31,9 +30,7 @@ public class InternetConnectionManager : MonoBehaviour
             if (!isOnline)
             {
                 isOnline = true;
-
-                if (onInternetConnected != null)
-                    onInternetConnected();
+                onInternetConnected?.Invoke();
             }
         }
         Invoke("CheckForInternetConnection", checkFrequency);

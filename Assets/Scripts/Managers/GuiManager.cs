@@ -7,39 +7,66 @@ public class GuiManager : MonoBehaviour
 {
     public static GuiManager instance;
 
+    #pragma warning disable 0649
+
+    [Header("Register")]
+
+    [SerializeField] private InputField registerInputfield;
+
+    [Header("Menu")]
+   
+    [SerializeField] private Text hiText;
+    [SerializeField] private Text maxScoreTransit;
+
     [Header("End game")]
-    public Text scoreEndGame;
+    [SerializeField] private Text scoreEndGame;
     //public Text coinsEndGame;
     //public Text xpEndGame;
-    public GameObject newRecordGo;
-    public Text endgameText;
-    public GameObject restartButton;
-    public GameObject continueButton;
+    [SerializeField] private GameObject newRecordGo;
+    [SerializeField] private Text endgameText;
+    [SerializeField] private GameObject restartButton;
+    [SerializeField] private GameObject continueButton;
 
     [Header("In game")]
-    public Text scoreText;
-    public Text rushHourText;
-    public Text trafficLightTimer;
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text rushHourText;
+    [SerializeField] private Text trafficLightTimer;
    
 
     [Header("Tap to Start")]
-    public Text tapToStart;
-    
+    [SerializeField] private Text tapToStart;
+
+    [Header("Prefabs and Other")]
+    [SerializeField] private GameObject uiSituationPrefab;
+    [SerializeField] private GameObject uiInstructionPrefab;
+    [SerializeField] private GameObject uiButtonPrefab;
+    [SerializeField] private GameObject uiButtonEmptyPrefab;
+    [SerializeField] private GameObject uiAchivementPrefab;
+    [SerializeField] private Transform gameCanvas;
+    [SerializeField] private Transform achievmentCanvas;
+    [SerializeField] private Transform achievmentMenuCanvas;
+
+    private List<GameObject> uiAchievment;
+    private List<GameObject> uiAchievmentMenu;
+
+    #pragma warning restore 0649
 
 
-   [Header("Prefabs and Other")]
-    public GameObject uiSituationPrefab;
-    public GameObject uiInstructionPrefab;
-    public GameObject uiButtonPrefab;
-    public GameObject uiButtonEmptyPrefab;
-    public GameObject uiAchivementPrefab;
-    public Transform gameCanvas;
-    public Transform achievmentCanvas;
-    public Transform achievmentMenuCanvas;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
-    public List<GameObject> uiAchievment;
-    public List<GameObject> uiAchievmentMenu;
-
+    public string GetRegisterInputFieldValue() {
+        return registerInputfield.text;
+    }
 
 
     public void ChangeCoinsAndXp(string c, string xp)
@@ -54,7 +81,15 @@ public class GuiManager : MonoBehaviour
         continueButton.SetActive(contin);
     }
 
-   
+    public void ChangeRecordTransit(string msg)
+    {
+        maxScoreTransit.text = $"Record {msg} ";
+    }
+    public void ChangeHiText(string msg) {
+        hiText.text = $"Hi, {msg}"; 
+    }
+
+
     public void ClearAchievment()
     {
         foreach (var a in uiAchievment)
@@ -71,6 +106,7 @@ public class GuiManager : MonoBehaviour
         }
         uiAchievmentMenu.Clear();
     }
+
     public UISituation InstantiateUIAchievment()
     {
         GameObject uiGO = GameObject.Instantiate(uiAchivementPrefab, achievmentCanvas);
@@ -104,11 +140,6 @@ public class GuiManager : MonoBehaviour
         return uiGO.GetComponent<UISituation>();
     }
 
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-    }
 
     public void ChangeTrafficLightTimer(string msg)
     {

@@ -12,34 +12,31 @@ public class PlayerManager : MonoBehaviour
 
     public static System.Action<Profile> onLoadComplete;
 
-    [Header("UI")]
-    [SerializeField] private InputField registerInputfield;
-    [SerializeField] private Text hiText;
-    [SerializeField] private Text maxScoreTransit;
-
-
     public Profile profile;
     
 
+
     public void Register()
     {
-        profile = new Profile();
+        string pName = GuiManager.instance.GetRegisterInputFieldValue();
 
-        profile.registered = "Registered";
-        profile.playerName = registerInputfield.text;
-        hiText.text = "Hi, " + profile.playerName;
+        int id = CreatePlayer(pName);
 
-        int id = CreatePlayer(profile.playerName);
+        profile = new Profile
+        {
+            registered = "Registered",
+            playerName = pName,
+            idUser = id == -1 ? -1 : id
+        };
 
-        profile.idUser = id;
-
+        UpdatePlayerUI();
         SaveLocalData();
-        GameManager.instance.SwitchScreen(GameStatus.MODE_SELECTION);
-    }
 
-    public void ChangeRecordTransit(string msg)
-    {
-        maxScoreTransit.text = msg;
+        GameManager.instance.SwitchScreen(GameStatus.MAIN_MENU);
+    }
+    public void UpdatePlayerUI() {
+        GuiManager.instance.ChangeHiText(profile.playerName);
+        GuiManager.instance.ChangeRecordTransit(profile.maxScoreTransit.ToString());
     }
 
     #region create online
@@ -51,7 +48,14 @@ public class PlayerManager : MonoBehaviour
         string jsonRequest = JsonUtility.ToJson(request);
         string response = WebRequestHelper.DoWebRequest(urlLeaderBoardPost, "POST", jsonRequest);
         Debug.Log("@CreatePlayer: " + response);
-        return JsonUtility.FromJson<LeaderBoardDataItem>(response).id;
+        try
+        {
+            return JsonUtility.FromJson<LeaderBoardDataItem>(response).id;
+        }
+        catch (System.Exception e) {
+            Debug.Log($"CreatePlayerFailed {e.Message}");
+            return -1;
+        }
     }
 
     public void UpdatePlayer(int playerId, int playerScore)

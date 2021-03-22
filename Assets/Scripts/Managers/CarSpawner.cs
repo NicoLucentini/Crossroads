@@ -65,13 +65,10 @@ public class CarSpawner : MonoBehaviour
 
     void Start ()
     {
-
         Shop.onCarBuyed += CarChances;
 
         OnReset();
         CarChances();
-      
-
     }
 
     void CarChances()

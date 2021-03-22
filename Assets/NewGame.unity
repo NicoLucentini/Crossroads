@@ -8774,13 +8774,13 @@ MonoBehaviour:
   achievmentManager: {fileID: 0}
   shop: {fileID: 0}
   skyboxSwitcher: {fileID: 1814561755}
-  uiProfile: {fileID: 0}
   timerManager: {fileID: 0}
   guiManager: {fileID: 0}
   gameServicesManager: {fileID: 0}
   screenManager: {fileID: 0}
   playerManager: {fileID: 0}
   myLeaderboard: {fileID: 0}
+  adManager: {fileID: 0}
   barriers:
   - {fileID: 254926279}
   - {fileID: 243821072}
@@ -8792,6 +8792,7 @@ MonoBehaviour:
   tapEnabled: 1
   mode: 0
   status: 0
+  gameCount: 0
   stats:
     ambulanceCount: 0
     taxiCount: 0
@@ -8812,11 +8813,8 @@ MonoBehaviour:
   pointsText: {fileID: 0}
   achievmentRewardText: {fileID: 0}
   achievmentLevelText: {fileID: 0}
-  registerInputfield: {fileID: 1714151303}
-  hiText: {fileID: 1565754989}
   xpTable: e8030000dc050000dc050000dc050000d0070000c4090000c4090000b80b0000b80b0000ac0d0000ac0d0000a00f0000a00f0000941100009411000088130000881300007c150000701700007017000070170000641900006419000064190000581b0000
   profileMaxLevel: 25
-  gameCount: 0
   transit_StartFreq: 0.4
   transit_MinFreq: 0.4
   transit_RushHour: 0.75
@@ -13013,7 +13011,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c26cbc36a424a94ab781b4c1cd20dd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  current: {fileID: 1062916738}
   screens:
   - status: 0
     screen: {fileID: 1062916738}
@@ -13414,9 +13411,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17864c3dde74b9c4ca600fa9cc205851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  registerInputfield: {fileID: 1714151303}
-  hiText: {fileID: 1565754989}
-  maxScoreTransit: {fileID: 580190521}
   profile:
     maxScoreNoBrakes: 0
     maxScoreTransit: 0
@@ -15633,9 +15627,9 @@ RectTransform:
   m_Father: {fileID: 224618065}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 256, y: -64}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 512, y: 64}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1072519856
@@ -19132,6 +19126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f0f855f67405945aa26ae6e595e734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  registerInputfield: {fileID: 1714151303}
+  hiText: {fileID: 1565754989}
+  maxScoreTransit: {fileID: 580190521}
   scoreEndGame: {fileID: 1692758737}
   newRecordGo: {fileID: 11340139}
   endgameText: {fileID: 2137815479}
@@ -19141,8 +19138,7 @@ MonoBehaviour:
   rushHourText: {fileID: 766548310}
   trafficLightTimer: {fileID: 0}
   tapToStart: {fileID: 1956010219}
-  uiSituationPrefab: {fileID: 1500604094022248, guid: af259f49159f08b469d9c81d0ec82eea,
-    type: 3}
+  uiSituationPrefab: {fileID: 0}
   uiInstructionPrefab: {fileID: 1500604094022248, guid: fedc29c42e8dda142a78c56d5bfad49b,
     type: 3}
   uiButtonPrefab: {fileID: 1741524678418780, guid: b070e6408af96ff4387def30810c419d,
@@ -19154,8 +19150,6 @@ MonoBehaviour:
   gameCanvas: {fileID: 144359302}
   achievmentCanvas: {fileID: 1067321741}
   achievmentMenuCanvas: {fileID: 0}
-  uiAchievment: []
-  uiAchievmentMenu: []
 --- !u!1 &1307353979
 GameObject:
   m_ObjectHideFlags: 0
@@ -35219,7 +35213,7 @@ PrefabInstance:
     - target: {fileID: 9013914990311128779, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_Name
-      value: w
+      value: PlayerRecordScore
       objectReference: {fileID: 0}
     - target: {fileID: 9013914990351490811, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
@@ -35279,7 +35273,7 @@ PrefabInstance:
     - target: {fileID: 9013914990943992040, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9013914990944442887, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
@@ -35299,7 +35293,7 @@ PrefabInstance:
     - target: {fileID: 9013914991014709692, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991166848078, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
@@ -35409,7 +35403,7 @@ PrefabInstance:
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
@@ -35419,7 +35413,7 @@ PrefabInstance:
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
@@ -35429,22 +35423,37 @@ PrefabInstance:
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -93.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -1529.2
+      value: 630.80005
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 570.2
+      value: 570
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991476571422, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -7.4003906
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013914991476571423, guid: b80bff24d31aae34d9178e957fc07750,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013914991476571423, guid: b80bff24d31aae34d9178e957fc07750,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013914991476571423, guid: b80bff24d31aae34d9178e957fc07750,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991581655301, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
