@@ -56,6 +56,8 @@ public class GameManager : MonoBehaviour
     public static System.Action onGameResume;
     public static System.Action onLoadComplete;
     public static System.Action onScore;
+    public static System.Action onBackToMenu;
+    public static System.Action onClickPlay;
     #endregion
 
 
@@ -88,7 +90,6 @@ public class GameManager : MonoBehaviour
     [ReadOnly] public bool tapEnabled = true;
     public static float globalCarSpeed;
     public GameMode mode;
-    public GameStatus status = GameStatus.MAIN_MENU;
 
     public int gameCount;
 
@@ -134,8 +135,7 @@ public class GameManager : MonoBehaviour
     {
         if (instance == null) instance = this;
 
-        PlayerManager.onLoadComplete += UpdateAfterLoadData;
-        PlayerManager.onLoadComplete += OnLoginSuccesful;
+        PlayerManager.onLoadSuccesfull += UpdateAfterLoadData;
 
         CacheManagers();
 
@@ -145,25 +145,10 @@ public class GameManager : MonoBehaviour
         rewards.Add(GameMode.NO_BRAKES, new GameReward(.75f, .75f));
     }
 
-    void OnLoginSuccesful(Profile profile) {
-        Debug.Log("@OnLoginSuccesful");
-        playerManager.SaveLocalData();
-        SwitchScreen(GameStatus.MAIN_MENU);
-    }
-
     void UpdateAfterLoadData(Profile profile)
     {
-        Debug.Log($"@UpdateAfterLoadData  { profile != null}" );
-
-        if (profile != null)
-        {
-            this.profile = profile;
-            playerManager.UpdatePlayerUI();
-        }
-        else
-        {
-            SwitchScreen(GameStatus.SIGN_IN);
-        }
+        Debug.Log($"@UpdateAfterLoadData");
+        this.profile = profile;
     }
     void CacheManagers() {
         if (guiManager == null) guiManager = FindObjectOfType<GuiManager>();
@@ -212,19 +197,15 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            if (status == GameStatus.TAP_TO_PLAY)
+            if (screenManager.GetStatus() == GameStatus.TAP_TO_PLAY)
                 OnGameStart();
         }
     
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            if (status == GameStatus.SHOP)
-                SwitchScreen(GameStatus.MAIN_MENU);
-            else if (status == GameStatus.MAIN_MENU)
+            if (screenManager.GetStatus() == GameStatus.MAIN_MENU)
                 QuitGame();
         }
-       
-      
     }
 
     
@@ -357,7 +338,7 @@ public class GameManager : MonoBehaviour
 
     public void MainMenuFromShop()
     {
-        SwitchScreen(GameStatus.MAIN_MENU);
+        screenManager.SwitchScreen(GameStatus.MAIN_MENU);
     }
 
     //QUIT GAME SE LLAMA CON EL BOTON O CON LA TECLA DE ATRAS
@@ -370,7 +351,7 @@ public class GameManager : MonoBehaviour
     //CLICKEA EL BOTON DE SHOP
     public void OnClickShop()
     {
-        SwitchScreen(GameStatus.SHOP);
+       screenManager.SwitchScreen(GameStatus.SHOP);
     }
 
     //CLICKEA EL BOTON DE PAUSA EN LA PARTIDA
@@ -403,21 +384,19 @@ public class GameManager : MonoBehaviour
         
         
         StartCoroutine(ResetTapCt());
-
-        playerManager.SaveLocalData();
-        SwitchScreen(GameStatus.MAIN_MENU);
+        onBackToMenu?.Invoke();
     }
 
     public void OnClickRestart()
     {
         if (mode == GameMode.TRANSIT)
-            StartTransitMode();
+            OnClickPlay();
       
         OnGameStart();
     }
 
     //CLICKEA EL BOTON DE MODO TRANSIT
-    public void StartTransitMode()
+    public void OnClickPlay()
     {
         mode = GameMode.TRANSIT;
         /*
@@ -435,15 +414,10 @@ public class GameManager : MonoBehaviour
         }
         gameLights.SetActive(true);
 
-        SwitchScreen(GameStatus.TAP_TO_PLAY);
+        onClickPlay?.Invoke();
     }
    
-    //CAMBIA LA PANTALLA DEL MENU
-    public void SwitchScreen(GameStatus s)
-    {
-        status = s;
-        screenManager.SwitchScreen(s);
-    }
+   
     #endregion
 
     #region GAME EVENTS
@@ -473,7 +447,6 @@ public class GameManager : MonoBehaviour
         adManager.adView = false;
         gameIsRunning = true;
         skyboxSwitcher.SetSkybox();
-        SwitchScreen(GameStatus.IN_GAME);
         guiManager.ShowRestartAndContinue(true, true);
 
     }
@@ -490,15 +463,16 @@ public class GameManager : MonoBehaviour
         if (newRecord)
         { 
             profile.maxScoreTransit = stats.score;
-            playerManager.UpdatePlayer(profile.idUser, stats.score);
             guiManager.ChangeRecordTransit("RECORD " + profile.maxScoreTransit);
-            myLeaderboard.UpdateUIData();
+            if (InternetConnectionManager.isOnline)
+            {
+                playerManager.UpdatePlayer(profile.idUser, stats.score);
+                myLeaderboard.UpdateUIData();
+            }
         }
 
 
         //gameServicesManager.ReportScore(score);
-
-        SwitchScreen(GameStatus.END_GAME);
 
         guiManager.ChangeNewRecord(newRecord);
 
@@ -506,23 +480,14 @@ public class GameManager : MonoBehaviour
         if (!won)
             adGo.SetActive(!adView);
             */
-        Debug.Log($"@OnEndGame Pre Time Scale");
      
         spawner.enabled = false;
         controller.enabled = false;
-        Debug.Log($"@OnEndGame Post Time Scale");
-        onGameEnd?.Invoke();
-       // Time.timeScale = 0;
-        Debug.Log($"@OnEndGame Post Invoke");
-        
-        playerManager.SaveLocalData();
-        Debug.Log($"@OnEndGame Post Save");
-
+        onGameEnd?.Invoke();        
     }
     
     public void OnResumeGame()
     {
-        SwitchScreen(GameStatus.IN_GAME);
         adManager.adView = true;
         Time.timeScale = 1;
         spawner.OnReset();

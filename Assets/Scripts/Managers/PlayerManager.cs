@@ -10,11 +10,20 @@ public class PlayerManager : MonoBehaviour
     const string urlLeaderBoardPut = "https://heroku-demo-lucentini.herokuapp.com/usuarios/";
 
 
-    public static System.Action<Profile> onLoadComplete;
+    public static System.Action<Profile> onLoadSuccesfull;
+    public static System.Action onLoadFailed;
 
     public Profile profile;
-    
 
+
+    private void Awake()
+    {
+        GameManager.onGameEnd += SaveLocalData;
+        GameManager.onBackToMenu += SaveLocalData;
+        
+        onLoadSuccesfull += (x) => UpdatePlayerUI();
+        onLoadSuccesfull += (x) => SaveLocalData();
+    }
 
     public void Register()
     {
@@ -29,10 +38,7 @@ public class PlayerManager : MonoBehaviour
             idUser = id == -1 ? -1 : id
         };
 
-        UpdatePlayerUI();
-        SaveLocalData();
-
-        GameManager.instance.SwitchScreen(GameStatus.MAIN_MENU);
+        onLoadSuccesfull?.Invoke(profile);
     }
     public void UpdatePlayerUI() {
         GuiManager.instance.ChangeHiText(profile.playerName);
@@ -74,12 +80,29 @@ public class PlayerManager : MonoBehaviour
         Debug.Log("#PlayerManager @SaveLocalData");
         SaveManager.SaveData(Application.persistentDataPath + "/player.sav", profile);
     }
+    void OnLoadSuccesfull(Profile profile) {
+        if (profile.idUser == -1 && InternetConnectionManager.isOnline) {
+            CreatePlayer(profile.playerName);
+        }
+
+        UpdatePlayerUI();
+        SaveLocalData();
+        onLoadSuccesfull?.Invoke(profile);
+    }
     public void LoadLocalData()
     {   
         profile = SaveManager.LoadData<Profile>(Application.persistentDataPath + "/player.sav");
         Debug.Log(profile.ToStringFull());
         this.Log($"@LoadLocalData {profile.ToStringFull()}");
-        onLoadComplete?.Invoke(profile);
+        if (profile != null)
+        {
+            OnLoadSuccesfull(profile);
+        }
+        else
+        {
+            onLoadFailed?.Invoke();
+        }
     }
     #endregion
 }
+

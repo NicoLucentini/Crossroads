@@ -7,13 +7,13 @@ public class MyLeaderBoard : MonoBehaviour
     const string urlLeaderBoard = "https://heroku-demo-lucentini.herokuapp.com/usuarios/getAllUsers";
 
 
-    public LeaderBoardData data;
+    private LeaderBoardData data;
 
-    public Transform parent;
-    public int maxData;
-
-    public GameObject playerDataPrefab;
-
+#pragma warning disable 0649
+    [SerializeField] private Transform parent;
+    [SerializeField] private int maxData;
+    [SerializeField] private GameObject playerDataPrefab;
+#pragma warning restore 0649
     private int playerId;
 
     private List<GameObject> leaderboardItems = new List<GameObject>();
@@ -21,17 +21,21 @@ public class MyLeaderBoard : MonoBehaviour
 
     public void Awake()
     {
-        PlayerManager.onLoadComplete += SetPlayerId;
+        PlayerManager.onLoadSuccesfull += SetPlayerId;
     }
 
 
     public void SetPlayerId(Profile profile) {
+        
         Debug.Log($"# MyLeaderBoard @SetPlayerId {profile.idUser}");
         playerId = profile.idUser;
+        
         UpdateUIData();
     }
 
     public void UpdateUIData() {
+        if (!InternetConnectionManager.isOnline) return;
+
         LoadData();
         DestoyLeaderboardItems();
         
@@ -81,10 +85,8 @@ public class MyLeaderBoard : MonoBehaviour
         leaderboardItems.Add(go);
     }
 
-
     public void LoadData()
     {
-        
         string response = WebRequestHelper.DoWebRequest(urlLeaderBoard, "GET");
         Debug.Log($"#MyLeaderBoard @LoadData: {urlLeaderBoard} \n Response: {response}"  );
         data = JsonUtility.FromJson<LeaderBoardData>(response);

@@ -11,6 +11,8 @@ public static class MonobehaviourExtension
     }
     public static string ToStringFull(this object obj )
     {
+        if (obj == null) return null;
+                 
         string res = $"{obj.GetType().FullName} [ ";
         foreach (var field in obj.GetType().GetFields().Where(x=>x.IsPublic)) {
                 res += $" {field.Name}: {field.GetValue(obj)} ";

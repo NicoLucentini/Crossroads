@@ -7,7 +7,7 @@ public class InternetConnectionManager : MonoBehaviour
     public static System.Action onInternetConnected;
     public static System.Action onInternetDisconnected;
     public float checkFrequency = 15f;
-    public static bool isOnline;
+    public static bool isOnline = true;
 
     private void Awake()
     {

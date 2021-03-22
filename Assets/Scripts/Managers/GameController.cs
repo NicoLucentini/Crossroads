@@ -31,8 +31,8 @@ public class GameController : MonoBehaviour
     public void OnClickTap()
     {
         if (!enabled) return;
-        if (onTap != null)
-            onTap();
+        
+        onTap?.Invoke();
     }
 
     private void Update()
