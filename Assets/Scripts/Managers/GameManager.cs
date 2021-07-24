@@ -72,7 +72,6 @@ public class GameManager : MonoBehaviour
     public SkyboxSwitcher skyboxSwitcher;
     public TimerManager timerManager;
     public GuiManager guiManager;
-    public GameServicesMgr gameServicesManager;
     public ScreenManager screenManager;
     public PlayerManager playerManager;
     public MyLeaderBoard myLeaderboard;
@@ -160,7 +159,6 @@ public class GameManager : MonoBehaviour
         if (shop == null) shop = FindObjectOfType<Shop>();
         if (skyboxSwitcher == null) skyboxSwitcher = FindObjectOfType<SkyboxSwitcher>();
         if (spawner == null) spawner = FindObjectOfType<CarSpawner>();
-        if (gameServicesManager == null) gameServicesManager = FindObjectOfType<GameServicesMgr>();
         if (screenManager == null) screenManager = FindObjectOfType<ScreenManager>();
         if (playerManager == null) playerManager = FindObjectOfType<PlayerManager>();
         if (myLeaderboard == null) myLeaderboard = FindObjectOfType<MyLeaderBoard>();
