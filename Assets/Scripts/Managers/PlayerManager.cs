@@ -51,8 +51,8 @@ public class PlayerManager : MonoBehaviour
     {
         LeaderBoardDataItem request = new LeaderBoardDataItem() { nombre = playerNombre, score = "0" };
 
-        string jsonRequest = JsonUtility.ToJson(request);
-        string response = WebRequestHelper.DoWebRequest(urlLeaderBoardPost, "POST", jsonRequest);
+        string jsonRequest = request.ToJson();
+        string response = WebRequestHelper.Post(urlLeaderBoardPost, jsonRequest);
         Debug.Log("@CreatePlayer: " + response);
         try
         {
@@ -66,10 +66,9 @@ public class PlayerManager : MonoBehaviour
 
     public void UpdatePlayer(int playerId, int playerScore)
     {
-
         LeaderBoardDataItem request = new LeaderBoardDataItem() { id = playerId, score = playerScore.ToString() };
-        string jsonRequest = JsonUtility.ToJson(request);
-        string response = WebRequestHelper.DoWebRequest($"{urlLeaderBoardPut}/{playerId}", "PUT", jsonRequest);
+        string jsonRequest = request.ToJson();
+        string response = WebRequestHelper.Put($"{urlLeaderBoardPut}/{playerId}", jsonRequest);
         Debug.Log("@UpdatePlayer: " + response);
     }
     #endregion

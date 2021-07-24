@@ -8,7 +8,7 @@ using UnityEngine;
 public class WebRequestHelper : MonoBehaviour
 {
 
-    public static string DoWebRequest(string url, string method, string body = null, System.Action<string> callback = null)
+    private static string DoWebRequest(string url, string method, string body = null, System.Action<string> callback = null)
     {
         byte[] byteArray = null;
         string jsonResponse;
@@ -27,6 +27,15 @@ public class WebRequestHelper : MonoBehaviour
         StreamReader reader = new StreamReader(response.GetResponseStream());
         jsonResponse = reader.ReadToEnd();
         return jsonResponse;
+    }
 
+    public static string Post(string url, string body) {
+        return DoWebRequest(url, "POST", body);
+    }
+    public static string Get(string url, string body = null){
+        return DoWebRequest(url, "GET", body);
+    }
+    public static string Put(string url, string body = null){
+        return DoWebRequest(url, "PUT", body);
     }
 }

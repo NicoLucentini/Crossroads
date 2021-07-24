@@ -37,6 +37,9 @@ public class MyLeaderBoard : MonoBehaviour
         if (!InternetConnectionManager.isOnline) return;
 
         LoadData();
+
+        if (data.data.Count == 0) return;
+
         DestoyLeaderboardItems();
         
         var orderedScore = data.data.OrderByDescending(x => int.Parse(x.score)).ToList();
@@ -87,9 +90,9 @@ public class MyLeaderBoard : MonoBehaviour
 
     public void LoadData()
     {
-        string response = WebRequestHelper.DoWebRequest(urlLeaderBoard, "GET");
+        string response = WebRequestHelper.Get(urlLeaderBoard);
         Debug.Log($"#MyLeaderBoard @LoadData: {urlLeaderBoard} \n Response: {response}"  );
-        data = JsonUtility.FromJson<LeaderBoardData>(response);
+        data = response.FromJson<LeaderBoardData>();
     }
 
 
