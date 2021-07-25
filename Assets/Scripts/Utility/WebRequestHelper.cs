@@ -35,7 +35,7 @@ public class WebRequestHelper : MonoBehaviour
     public static string Get(string url, string body = null){
         return DoWebRequest(url, "GET", body);
     }
-    public static string Put(string url, string body = null){
+    public static string Put(string url, string body){
         return DoWebRequest(url, "PUT", body);
     }
 }

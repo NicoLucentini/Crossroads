@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MyLeaderBoard : MonoBehaviour
 {
-    const string urlLeaderBoard = "https://heroku-demo-lucentini.herokuapp.com/usuarios/getAllUsers";
+    public const string urlLeaderBoard = "https://heroku-demo-lucentini.herokuapp.com/usuarios/getAllUsers";
 
 
     private LeaderBoardData data;
@@ -43,7 +43,7 @@ public class MyLeaderBoard : MonoBehaviour
         DestoyLeaderboardItems();
         
         var orderedScore = data.data.OrderByDescending(x => int.Parse(x.score)).ToList();
-
+        maxData = orderedScore.Count < maxData ? orderedScore.Count : maxData;
         int myIdPos = orderedScore.IndexOf(orderedScore.Find(x => x.id == playerId));
 
         int startPos = (int)Mathf.CeilToInt( (float)( (maxData -2) / 2));
@@ -90,9 +90,8 @@ public class MyLeaderBoard : MonoBehaviour
 
     public void LoadData()
     {
-        string response = WebRequestHelper.Get(urlLeaderBoard);
-        Debug.Log($"#MyLeaderBoard @LoadData: {urlLeaderBoard} \n Response: {response}"  );
-        data = response.FromJson<LeaderBoardData>();
+        data = OnlineService.GetAllPlayers();
+        Debug.Log($"#MyLeaderBoard @LoadData: {urlLeaderBoard} \n Response: {  data.ToStringFull()}");
     }
 
 

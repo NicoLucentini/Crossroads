@@ -20,58 +20,43 @@ public class PlayerManager : MonoBehaviour
     {
         GameManager.onGameEnd += SaveLocalData;
         GameManager.onBackToMenu += SaveLocalData;
-        
+
         onLoadSuccesfull += (x) => UpdatePlayerUI();
         onLoadSuccesfull += (x) => SaveLocalData();
     }
+
+
+    #region UI Handler
 
     public void Register()
     {
         string pName = GuiManager.instance.GetRegisterInputFieldValue();
 
-        int id = CreatePlayer(pName);
-
         profile = new Profile
         {
-            registered = "Registered",
             playerName = pName,
-            idUser = id == -1 ? -1 : id
+            idUser = -1
         };
 
+        if(InternetConnectionManager.isOnline)
+            profile.idUser = OnlineService.CreatePlayer(profile.playerName);
+
+        profile.registered = profile.idUser == -1 ? "Local" : "Online";
+           
         onLoadSuccesfull?.Invoke(profile);
     }
-    public void UpdatePlayerUI() {
+
+    #endregion
+
+    void UpdatePlayerUI() {
         GuiManager.instance.ChangeHiText(profile.playerName);
         GuiManager.instance.ChangeRecordTransit(profile.maxScoreTransit.ToString());
     }
 
-    #region create online
-
-    public int CreatePlayer(string playerNombre)
-    {
-        LeaderBoardDataItem request = new LeaderBoardDataItem() { nombre = playerNombre, score = "0" };
-
-        string jsonRequest = request.ToJson();
-        string response = WebRequestHelper.Post(urlLeaderBoardPost, jsonRequest);
-        Debug.Log("@CreatePlayer: " + response);
-        try
-        {
-            return JsonUtility.FromJson<LeaderBoardDataItem>(response).id;
-        }
-        catch (System.Exception e) {
-            Debug.Log($"CreatePlayerFailed {e.Message}");
-            return -1;
-        }
+   public void UpdatePlayer(int playerId, int playerScore) {
+        OnlineService.UpdatePlayer(playerId, playerScore);
+        UpdatePlayerUI();
     }
-
-    public void UpdatePlayer(int playerId, int playerScore)
-    {
-        LeaderBoardDataItem request = new LeaderBoardDataItem() { id = playerId, score = playerScore.ToString() };
-        string jsonRequest = request.ToJson();
-        string response = WebRequestHelper.Put($"{urlLeaderBoardPut}/{playerId}", jsonRequest);
-        Debug.Log("@UpdatePlayer: " + response);
-    }
-    #endregion
 
     #region save and load local
     public void SaveLocalData()
@@ -80,13 +65,12 @@ public class PlayerManager : MonoBehaviour
         SaveManager.SaveData(Application.persistentDataPath + "/player.sav", profile);
     }
     void OnLoadSuccesfull(Profile profile) {
-        if (profile.idUser == -1 && InternetConnectionManager.isOnline) {
-            CreatePlayer(profile.playerName);
-        }
-
-        UpdatePlayerUI();
-        SaveLocalData();
+        CreatePlayerWhenRegistrationOccuredOffline(profile);
         onLoadSuccesfull?.Invoke(profile);
+    }
+    void CreatePlayerWhenRegistrationOccuredOffline(Profile profile) {
+        if (profile.idUser == -1 && InternetConnectionManager.isOnline)
+            profile.idUser = OnlineService.CreatePlayer(profile.playerName, profile.maxScoreTransit.ToString());
     }
     public void LoadLocalData()
     {   

@@ -23,7 +23,7 @@ public static class MonobehaviourExtension
     public static string ToJson(this object obj) {
         return JsonUtility.ToJson(obj);
     }
-    public static T FromJson<T>(this string json)
+    public static T ToObject<T>(this string json)
     {
         return JsonUtility.FromJson<T>(json);
     }

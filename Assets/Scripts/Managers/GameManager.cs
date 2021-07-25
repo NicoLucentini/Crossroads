@@ -469,9 +469,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-
-        //gameServicesManager.ReportScore(score);
-
         guiManager.ChangeNewRecord(newRecord);
 
         /*

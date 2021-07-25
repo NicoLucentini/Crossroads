@@ -9,9 +9,14 @@ public class InternetConnectionManager : MonoBehaviour
     public float checkFrequency = 15f;
     public static bool isOnline = true;
 
+    [SerializeField] private bool simulateOffline;
+
     private void Awake()
     {
-        CheckForInternetConnection();
+        if (simulateOffline)
+            isOnline = false;
+        else
+            CheckForInternetConnection();
     }
 
     public void CheckForInternetConnection()

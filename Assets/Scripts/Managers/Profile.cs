@@ -15,5 +15,5 @@ public class Profile
     //public bool[] blockedData ;
     public List<bool> blockedData;
     public int idUser = -1;
-    public string registered = "false";
+    public string registered;
 }
