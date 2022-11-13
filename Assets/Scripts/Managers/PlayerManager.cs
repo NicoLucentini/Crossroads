@@ -38,14 +38,17 @@ public class PlayerManager : MonoBehaviour
             idUser = -1
         };
 
-        if(InternetConnectionManager.isOnline)
-            profile.idUser = OnlineService.CreatePlayer(profile.playerName);
-
-        profile.registered = profile.idUser == -1 ? "Local" : "Online";
+       
            
         onLoadSuccesfull?.Invoke(profile);
     }
 
+    void RegisterOnline() {
+        if (InternetConnectionManager.isOnline)
+            profile.idUser = OnlineService.CreatePlayer(profile.playerName);
+
+        profile.registered = profile.idUser == -1 ? "Local" : "Online";
+    }
     #endregion
 
     void UpdatePlayerUI() {
@@ -66,11 +69,18 @@ public class PlayerManager : MonoBehaviour
     }
     void OnLoadSuccesfull(Profile profile) {
         CreatePlayerWhenRegistrationOccuredOffline(profile);
+        CreatePlayerWhenPlayerIsNotRegisterdOnline(profile);
+
         onLoadSuccesfull?.Invoke(profile);
     }
     void CreatePlayerWhenRegistrationOccuredOffline(Profile profile) {
-        if (profile.idUser == -1 && InternetConnectionManager.isOnline)
-            profile.idUser = OnlineService.CreatePlayer(profile.playerName, profile.maxScoreTransit.ToString());
+        if (profile.idUser == -1)
+            RegisterOnline();
+    }
+    void CreatePlayerWhenPlayerIsNotRegisterdOnline(Profile profile) {
+        if (profile.idUser != -1 && OnlineService.GetPlayer(profile.idUser) == null) {
+            RegisterOnline();
+        }
     }
     public void LoadLocalData()
     {   

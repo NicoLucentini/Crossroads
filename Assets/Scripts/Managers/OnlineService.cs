@@ -8,6 +8,10 @@ public class OnlineService
     const string urlLeaderBoardPost = "https://heroku-demo-lucentini.herokuapp.com/usuarios/create";
     const string urlLeaderBoardPut = "https://heroku-demo-lucentini.herokuapp.com/usuarios/";
 
+    public static LeaderBoardDataItem GetPlayer(int id) {
+        return WebRequestHelper.Get($"{urlLeaderBoardPut}/{id.ToString()}").ToObject<LeaderBoardDataItem>();
+    }
+
     public static int CreatePlayer(string playerName, string tScore = "0") {
 
         LeaderBoardDataItem request = new LeaderBoardDataItem() { nombre = playerName, score = tScore };

@@ -11,19 +11,26 @@ public class MyLeaderBoard : MonoBehaviour
 
 #pragma warning disable 0649
     [SerializeField] private Transform parent;
-    [SerializeField] private int maxData;
+    [Range(5, 10)][SerializeField] private int maxData = 8;
     [SerializeField] private GameObject playerDataPrefab;
 #pragma warning restore 0649
     private int playerId;
 
     private List<GameObject> leaderboardItems = new List<GameObject>();
 
+    bool leaderboardEnabled = false;
+    [SerializeField] private GameObject leaderboardGo;
 
     public void Awake()
     {
         PlayerManager.onLoadSuccesfull += SetPlayerId;
     }
 
+    public void EnableLeaderboard() {
+        leaderboardEnabled = !leaderboardEnabled;
+
+
+    }
 
     public void SetPlayerId(Profile profile) {
         
@@ -40,58 +47,59 @@ public class MyLeaderBoard : MonoBehaviour
 
         if (data.data.Count == 0) return;
 
-        DestoyLeaderboardItems();
-        
         var orderedScore = data.data.OrderByDescending(x => int.Parse(x.score)).ToList();
-        maxData = orderedScore.Count < maxData ? orderedScore.Count : maxData;
+
+        maxData = Mathf.Min(maxData, orderedScore.Count);
+
         int myIdPos = orderedScore.IndexOf(orderedScore.Find(x => x.id == playerId));
+        Debug.Log("My pos " + myIdPos);
+        List<LeaderBoardDataItem> finalOrdered = new List<LeaderBoardDataItem>();
 
-        int startPos = (int)Mathf.CeilToInt( (float)( (maxData -2) / 2));
-
-        if (myIdPos > 3) {
-
-            for (int i = 0; i < 2; i++)
-            {
-                var item = orderedScore[i];
-                CreateUIItem(item, i);
-            }
-            for (int i = 0; i < maxData - 2; i++)
-            {
-                
-                int pos = myIdPos - startPos + i;
-                if (pos < orderedScore.Count)
-                {
-                    var item = orderedScore[pos];
-                    CreateUIItem(item, pos);
-                }
-            }
+        if (myIdPos < maxData)
+        {
+            finalOrdered.AddRange(orderedScore.Take(maxData));
         }
         else{
-            for (int i = 0; i < maxData; i++)
+
+            finalOrdered.AddRange(orderedScore.Take(3)); // top
+
+            //Estoy en los ultimos 2
+            if (orderedScore.Count - myIdPos < 2)
             {
-                var item = orderedScore[i];
-                CreateUIItem(item, i);
+                finalOrdered.AddRange(orderedScore.GetRange(orderedScore.Count - 5, 5));
             }
+            else {
+                finalOrdered.AddRange(orderedScore.GetRange(myIdPos - 2, 5));
+            }
+        }
+        var it = finalOrdered.Find(x => x.id == playerId);
+        int finalPos = finalOrdered.IndexOf(it);
+        DrawUI(finalOrdered,orderedScore, finalPos);
+    }
+    private void DrawUI(List<LeaderBoardDataItem> items, List<LeaderBoardDataItem> order, int myId) {
+        DestroyLeaderboardItems();
+        for (int i = 0; i < items.Count; i++) {
+            CreateUIItem(items[i], order.IndexOf(items[i]), i == myId);
         }
     }
 
-    public void DestoyLeaderboardItems() {
+    public void DestroyLeaderboardItems() {
         for (int i = 0; i < leaderboardItems.Count; i++) {
             Destroy(leaderboardItems[i]);
         }
     }
 
-    void CreateUIItem(LeaderBoardDataItem item, int pos) {
+    void CreateUIItem(LeaderBoardDataItem item, int pos, bool me) {
         GameObject go = GameObject.Instantiate(playerDataPrefab);
         go.transform.SetParent(parent);
-        go.GetComponent<UILeaderboardItem>().Set($"#{pos+1} {item.nombre}", item.score ?? "-", Color.white);
+        go.GetComponent<UILeaderboardItem>().Set($"#{pos+1} {item.nombre}", item.score ?? "-",  me ? Color.blue : Color.white);
         leaderboardItems.Add(go);
     }
 
     public void LoadData()
     {
         data = OnlineService.GetAllPlayers();
-        Debug.Log($"#MyLeaderBoard @LoadData: {urlLeaderBoard} \n Response: {  data.ToStringFull()}");
+        Debug.Log($"#MyLeaderBoard @LoadData: {urlLeaderBoard} \n Response: {  data.data.ListFull()}");
     }
 
 
@@ -102,8 +110,8 @@ public class LeaderBoardDataItem {
     public int id;
     public string nombre;
     public string score;
-
 }
+
 [System.Serializable]
 public class LeaderBoardData
 {

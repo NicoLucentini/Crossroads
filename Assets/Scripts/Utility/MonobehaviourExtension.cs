@@ -20,6 +20,16 @@ public static class MonobehaviourExtension
         res+= " ]";
         return res;
     }
+
+    public static string ListFull<T>(this List<T> list) {
+
+        string res = "";
+        foreach (var item in list) {
+            res += item.ToStringFull();
+        }
+        return res;
+    }
+
     public static string ToJson(this object obj) {
         return JsonUtility.ToJson(obj);
     }

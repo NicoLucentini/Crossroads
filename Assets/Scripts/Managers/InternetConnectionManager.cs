@@ -6,10 +6,11 @@ public class InternetConnectionManager : MonoBehaviour
 {
     public static System.Action onInternetConnected;
     public static System.Action onInternetDisconnected;
-    public float checkFrequency = 15f;
+ 
     public static bool isOnline = true;
 
-    [SerializeField] private bool simulateOffline;
+    [SerializeField] private float checkFrequency = 15f;
+    [SerializeField] private bool simulateOffline = false;
 
     private void Awake()
     {
