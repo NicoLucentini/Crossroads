@@ -141,7 +141,7 @@ public class Taxi : Car
         myStop = TaxiStop.GetStop(dir);
     }
 
-    public override void OnGameEnd()
+    protected override void OnGameEnd()
     {
         base.OnGameEnd();
       

@@ -56,7 +56,8 @@ public class Ambulance : Car
             halo.enabled = !halo.enabled;
         }
     }
-    public override void OnGameEnd()
+
+    protected override void OnGameEnd()
     {
         base.OnGameEnd();
 

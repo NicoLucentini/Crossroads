@@ -54,14 +54,7 @@ public class RealtimeManager : MonoBehaviour
     {
         UnityWebRequest myHttpWebRequest = UnityWebRequest.Get("http://www.microsoft.com");
 
-        // UnityWebRequestAsyncOperation async = myHttpWebRequest.SendWebRequest();
-
-        //yield return async;
-        //yield return myHttpWebRequest.Send();
          yield return myHttpWebRequest.SendWebRequest();
-        //quizas haya que cambiarlo por esto
-        //string netTime = async.webRequest.GetResponseHeader("date");
-
         string netTime = myHttpWebRequest.GetResponseHeader("date");
         DateResolve(netTime, saveData);
         

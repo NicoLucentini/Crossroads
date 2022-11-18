@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TaxiStop : MonoBehaviour
@@ -11,16 +11,7 @@ public class TaxiStop : MonoBehaviour
         taxiStops.Add(this);
     }
 
-    public static TaxiStop GetStop(Directions dir)
-    {
-        foreach (var stop in taxiStops)
-        {
-            if (stop.dir == dir)
-                return stop;
-        }
+    public static TaxiStop GetStop(Directions dir) =>
+        taxiStops.FirstOrDefault(x => x.dir == dir);
 
-        return null;
-    }
-
-    
 }

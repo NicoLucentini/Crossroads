@@ -113,7 +113,8 @@ public class Car : MonoBehaviour
 
         Debug.Log("eNTRO A ROMPERESE");
     }
-    public void UnbreakCar()
+
+    private void UnbreakCar()
     {
         breakOn = false;
         isBroken = false;
@@ -136,6 +137,7 @@ public class Car : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+    
     #region SET
     public void SetColor(Color c)
     {
@@ -322,7 +324,7 @@ public class Car : MonoBehaviour
         }
     }
 
-    public void OnEndArrive()
+    private void OnEndArrive()
     {
         if (!rewardSended)
         {
@@ -354,7 +356,8 @@ public class Car : MonoBehaviour
 
         OnDie();
     }
-    public virtual void OnGameEnd()
+
+    protected virtual void OnGameEnd()
     {
         StopAllCoroutines();
         CancelInvoke();
