@@ -20,19 +20,25 @@ public class MyLeaderBoard : MonoBehaviour
 
     bool leaderboardEnabled = false;
     [SerializeField] private GameObject leaderboardGo;
-
+    [SerializeField] private GameObject leaderboardToggle;
     public void Awake()
     {
+        if(OnlineService.isOnline)
+            Activate();
+    }
+
+    void Activate()
+    {
         PlayerManager.onLoadSuccesfull += SetPlayerId;
+        leaderboardGo.SetActive(true);
+        leaderboardToggle.SetActive(true);
     }
 
     public void EnableLeaderboard() {
         leaderboardEnabled = !leaderboardEnabled;
-
-
     }
 
-    public void SetPlayerId(Profile profile) {
+    private void SetPlayerId(Profile profile) {
         
         Debug.Log($"# MyLeaderBoard @SetPlayerId {profile.idUser}");
         playerId = profile.idUser;
@@ -41,7 +47,7 @@ public class MyLeaderBoard : MonoBehaviour
     }
 
     public void UpdateUIData() {
-        if (!InternetConnectionManager.isOnline) return;
+        if (!InternetConnectionManager.isOnline || !OnlineService.isOnline) return;
 
         LoadData();
 
@@ -83,10 +89,9 @@ public class MyLeaderBoard : MonoBehaviour
         }
     }
 
-    public void DestroyLeaderboardItems() {
-        for (int i = 0; i < leaderboardItems.Count; i++) {
+    private void DestroyLeaderboardItems() {
+        for (int i = 0; i < leaderboardItems.Count; i++)
             Destroy(leaderboardItems[i]);
-        }
     }
 
     void CreateUIItem(LeaderBoardDataItem item, int pos, bool me) {

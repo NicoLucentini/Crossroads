@@ -5,17 +5,12 @@ using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
-
-    const string urlLeaderBoardPost = "https://heroku-demo-lucentini.herokuapp.com/usuarios/create";
-    const string urlLeaderBoardPut = "https://heroku-demo-lucentini.herokuapp.com/usuarios/";
-
-
-    public static System.Action<Profile> onLoadSuccesfull;
+    public static event System.Action<Profile> onLoadSuccesfull;
     public static System.Action onLoadFailed;
 
     public Profile profile;
 
-
+    
     private void Awake()
     {
         GameManager.onGameEnd += SaveLocalData;
@@ -57,8 +52,9 @@ public class PlayerManager : MonoBehaviour
     }
 
    public void UpdatePlayer(int playerId, int playerScore) {
-        OnlineService.UpdatePlayer(playerId, playerScore);
-        UpdatePlayerUI();
+       if(OnlineService.isOnline)
+            OnlineService.UpdatePlayer(playerId, playerScore);
+       UpdatePlayerUI();
     }
 
     #region save and load local
@@ -68,8 +64,11 @@ public class PlayerManager : MonoBehaviour
         SaveManager.SaveData(Application.persistentDataPath + "/player.sav", profile);
     }
     void OnLoadSuccesfull(Profile profile) {
-        CreatePlayerWhenRegistrationOccuredOffline(profile);
-        CreatePlayerWhenPlayerIsNotRegisterdOnline(profile);
+        if (OnlineService.isOnline)
+        {
+            CreatePlayerWhenRegistrationOccuredOffline(profile);
+            CreatePlayerWhenPlayerIsNotRegisterdOnline(profile);
+        }
 
         onLoadSuccesfull?.Invoke(profile);
     }

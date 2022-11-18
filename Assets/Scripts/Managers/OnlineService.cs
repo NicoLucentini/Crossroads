@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class OnlineService 
 {
+    public static bool isOnline = false;
     const string urlLeaderBoard = "https://heroku-demo-lucentini.herokuapp.com/usuarios/getAllUsers";
     const string urlLeaderBoardPost = "https://heroku-demo-lucentini.herokuapp.com/usuarios/create";
     const string urlLeaderBoardPut = "https://heroku-demo-lucentini.herokuapp.com/usuarios/";

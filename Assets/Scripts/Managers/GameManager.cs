@@ -462,20 +462,12 @@ public class GameManager : MonoBehaviour
         { 
             profile.maxScoreTransit = stats.score;
             guiManager.ChangeRecordTransit("RECORD " + profile.maxScoreTransit);
-            if (InternetConnectionManager.isOnline)
-            {
-                playerManager.UpdatePlayer(profile.idUser, stats.score);
-                myLeaderboard.UpdateUIData();
-            }
+            playerManager.UpdatePlayer(profile.idUser, stats.score);
+            myLeaderboard.UpdateUIData();
         }
 
         guiManager.ChangeNewRecord(newRecord);
-
-        /*
-        if (!won)
-            adGo.SetActive(!adView);
-            */
-     
+        
         spawner.enabled = false;
         controller.enabled = false;
         onGameEnd?.Invoke();        
