@@ -8985,7 +8985,6 @@ MonoBehaviour:
   gameIsRunning: 0
   cdTap: 1
   tapEnabled: 1
-  mode: 0
   gameCount: 0
   stats:
     ambulanceCount: 0
@@ -8999,26 +8998,10 @@ MonoBehaviour:
     carFixedCount: 0
     timer: 0
   gameLights: {fileID: 1547893}
-  adGo: {fileID: 1881631841}
   pauseImage: {fileID: 836413203}
-  pauseText: {fileID: 948065049}
-  freeCoinsBut: {fileID: 0}
-  freeCoinsTex: {fileID: 0}
-  pointsText: {fileID: 0}
-  achievmentRewardText: {fileID: 0}
-  achievmentLevelText: {fileID: 0}
   xpTable: e8030000dc050000dc050000dc050000d0070000c4090000c4090000b80b0000b80b0000ac0d0000ac0d0000a00f0000a00f0000941100009411000088130000881300007c150000701700007017000070170000641900006419000064190000581b0000
   profileMaxLevel: 25
-  transit_StartFreq: 0.4
-  transit_MinFreq: 0.4
-  transit_RushHour: 0.75
-  transit_Incr: 0.1
   transit_Speed: 8
-  brakes_StartFreq: 1
-  brakes_MinFreq: 0.4
-  brakes_RushHour: 0.5
-  brakes_Incr: 0.1
-  brakes_Speed: 15
   testAnim: {fileID: 511048402}
   growScore: 0
   growValue: 100
@@ -13937,18 +13920,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945639064}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &948065049 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9013914991045675047, guid: b80bff24d31aae34d9178e957fc07750,
-    type: 3}
-  m_PrefabInstance: {fileID: 9013914990366350142}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &949296281
 GameObject:
   m_ObjectHideFlags: 0
@@ -17202,10 +17173,6 @@ MonoBehaviour:
   onRushHour: 0
   rushHourFreqMult: 0.5
   currentCars: []
-  queuePrefab: {fileID: 0}
-  queueDirection: 0
-  queueType: 0
-  hasQueue: 0
   usesPool: 1
   pool: {fileID: 1064421854}
 --- !u!1 &1136438976
@@ -36003,7 +35970,12 @@ PrefabInstance:
     - target: {fileID: 9013914991326515610, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 420
+      value: 354.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013914991326515613, guid: b80bff24d31aae34d9178e957fc07750,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayButton
       objectReference: {fileID: 0}
     - target: {fileID: 9013914991327454127, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}
@@ -36294,6 +36266,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RegisterinputField
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013914991919725834, guid: b80bff24d31aae34d9178e957fc07750,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9013914992073720478, guid: b80bff24d31aae34d9178e957fc07750,
         type: 3}

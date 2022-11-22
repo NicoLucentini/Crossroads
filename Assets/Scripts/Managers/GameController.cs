@@ -48,19 +48,7 @@ public class GameController : MonoBehaviour
 
     public void SetOnTap()
     {
-        if (GameManager.instance.mode != GameMode.DRIVER)
-        {
-            onTap = OnTap;
-            //GuiManager.instance.trafficLightTimer.gameObject.SetActive(false);  
-        }
-        if (GameManager.instance.mode == GameMode.DRIVER)
-        {
-            onTap = ThrowRay;
-
-            InvokeRepeating("OnTap",0, 15);
-
-          //  GuiManager.instance.trafficLightTimer.gameObject.SetActive(true);
-        }
+        onTap = OnTap;
     }
 
     public void ThrowRay()
@@ -90,13 +78,6 @@ public class GameController : MonoBehaviour
     public void OnTap()
     {
         topIsOpen = !topIsOpen;
-
-        if (GameManager.instance.mode == GameMode.DRIVER)
-        {
-            StartCoroutine( CTTimer());
-        }
-
-
         ModifyBarriers(topIsOpen);
     }
     public void ModifyBarriers(bool topOn)

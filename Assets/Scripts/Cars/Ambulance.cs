@@ -6,15 +6,12 @@ public class Ambulance : Car
 {
     public float maxWaitTime = 8;
 
-    public UISituation ui;
+    private UISituation ui;
     public Sprite icon;
 
     public Behaviour halo;
 
-    public override void Start()
-    {
-        base.Start();
-    }
+    
     public override void Init()
     {
         base.Init();

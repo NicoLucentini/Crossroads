@@ -26,7 +26,8 @@ public class BuildingsManager : MonoBehaviour
         foreach (var sp in spawnPoints)
             sp.ResetSpawn();
     }
-    public void OnGrow()
+
+    private void OnGrow()
     {
         //Elegir uno que este vacio...si no esta vacio eligo cualquiera
 

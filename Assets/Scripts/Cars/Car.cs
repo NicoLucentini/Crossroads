@@ -57,6 +57,10 @@ public class Car : MonoBehaviour
     }
     public virtual void Init()
     {
+        
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        transform.eulerAngles = Vector3.zero;
         maxSpeed = GameManager.globalCarSpeed;
         rewardSended = false;
         acel = maxSpeed * 3;
@@ -155,13 +159,9 @@ public class Car : MonoBehaviour
     public bool claxonOn = false;
     public virtual void Update()
     {
-
-     
         if (breakOn)
         {
             timeBreak += Time.deltaTime;
-
-           
             if (timeBreak > 3.5f)
             {
                 if (!claxonOn)
@@ -173,8 +173,8 @@ public class Car : MonoBehaviour
             
         }
     }
-   
-    public virtual void Move()
+
+    protected virtual void Move()
     {
         if (!breakOn)
         {
@@ -186,8 +186,7 @@ public class Car : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if (GameManager.instance.mode == GameMode.TRANSIT || GameManager.instance.mode == GameMode.CAREER)
-            AutoBrake();
+        AutoBrake();
 
         if (!isBroken)
         {
@@ -215,9 +214,9 @@ public class Car : MonoBehaviour
         CancelInvoke("UnBrake");
     }
 
-    public void AutoBrake()
+    private void AutoBrake()
     {
-        int mask = GameManager.instance.mode == GameMode.NO_BRAKES ? 1 << Layers.CARS : 1 << Layers.CARS | 1 << Layers.BARRIER;
+        int mask = 1 << Layers.CARS | 1 << Layers.BARRIER;
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, transform.forward, out hit, breakDistance, mask))
@@ -230,9 +229,6 @@ public class Car : MonoBehaviour
                 {
                     return;
                 }
-
-               
-                
             }
 
             if (lastRay == Layers.CARS)
@@ -251,14 +247,6 @@ public class Car : MonoBehaviour
             }
             Break();
 
-            /*
-            if (lastRay == Layers.CARS)
-            {
-                Car car = hit.collider.GetComponent<Car>();
-                speed = car.speed;
-                breakOn = true;
-            }
-            */
         }
         else
         {
@@ -284,11 +272,6 @@ public class Car : MonoBehaviour
             canCollide = false;
             if (collision.gameObject.GetComponent<Barrier>().direction == dir)
             {
-                if (GameManager.instance.mode == GameMode.NO_BRAKES)
-                {
-                    GuiManager.instance.ChangeEndGameText("DONT LET CARS CRASH!!!");
-                    GameManager.instance.OnCarCollision();
-                }
             }
             else
             {

@@ -16,7 +16,8 @@ public class CarPool : MonoBehaviour
         if(spawner.usesPool)
             Init(spawner.carSpawns);
     }
-    public void Init(List<CarSpawn> spawns)
+
+    private void Init(List<CarSpawn> spawns)
     {
         foreach (var s in spawns)
         {
@@ -29,7 +30,8 @@ public class CarPool : MonoBehaviour
             }
         }
     }
-    public void CreateCar(GameObject prefab, CarType type)
+
+    private void CreateCar(GameObject prefab, CarType type)
     {
         GameObject carGo = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity);
         carGo.SetActive(false);
@@ -40,7 +42,8 @@ public class CarPool : MonoBehaviour
         car.transform.SetParent(inactivesT);
         inactives.Add(car);
     }
-    public void InitType(List<CarSpawn> spawns, CarType type)
+
+    private void InitType(List<CarSpawn> spawns, CarType type)
     {
         foreach (var s in spawns)
         {

@@ -5,9 +5,9 @@ using UnityEngine;
 public class Taxi : Car
 {
     public static bool taxiFirstTime;
-    public TaxiStop myStop;
-    public bool onTaxiStop = false;
-    public bool hasStopped = false;
+    private TaxiStop myStop;
+    private bool onTaxiStop = false;
+    private bool hasStopped = false;
     public float taxiWaitTime = 5;
     public float taxiWaitTimer = 5;
 
@@ -17,11 +17,7 @@ public class Taxi : Car
     UISituation taxiInstruction;
     public GameObject taxiUser;
 
-    public override void Start()
-    {
-        base.Start();
-        
-    }
+   
     public override void Init()
     {
         base.Init();
@@ -101,7 +97,7 @@ public class Taxi : Car
 
     }
 
-    public override void Move()
+    protected override void Move()
     {
         if(!onTaxiStop)
             base.Move();

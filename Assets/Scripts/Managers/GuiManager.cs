@@ -64,32 +64,18 @@ public class GuiManager : MonoBehaviour
         }
     }
 
-    public string GetRegisterInputFieldValue() {
-        return registerInputfield.text;
-    }
-
-
-    public void ChangeCoinsAndXp(string c, string xp)
-    {
-     //   coinsEndGame.text = "+ " + c;
-    //xpEndGame.text = "+ " + xp;
-    }
-
+    public string GetRegisterInputFieldValue() => registerInputfield.text;
     public void ShowRestartAndContinue(bool restart, bool contin)
     {
         restartButton.SetActive(restart);
         continueButton.SetActive(contin);
     }
 
-    public void ChangeRecordTransit(string msg)
-    {
+    public void ChangeRecordTransit(string msg) =>
         maxScoreTransit.text = $"Record {msg} ";
-    }
-    public void ChangeHiText(string msg) {
+    public void ChangeHiText(string msg) =>
         hiText.text = $"Hi, {msg}"; 
-    }
-
-
+    
     public void ClearAchievment()
     {
         foreach (var a in uiAchievment)
@@ -119,59 +105,34 @@ public class GuiManager : MonoBehaviour
         uiAchievmentMenu.Add(uiGO);
         return uiGO.GetComponent<UISituation>();
     }
-    public UIButton InstantiateUIButton()
-    {
-        GameObject uiGO = GameObject.Instantiate(uiButtonPrefab, gameCanvas);
-        return uiGO.GetComponent<UIButton>();
-    }
-    public UIButton InstantiateUIButtonEmpty()
-    {
-        GameObject uiGO = GameObject.Instantiate(uiButtonEmptyPrefab, gameCanvas);
-        return uiGO.GetComponent<UIButton>();
-    }
-    public UISituation InstantiateUIInstructionEmpty()
-    {
-        GameObject uiGO = GameObject.Instantiate(uiInstructionPrefab, gameCanvas);
-        return uiGO.GetComponent<UISituation>();
-    }
-    public UISituation InstantiateUISituation()
-    {
-        GameObject uiGO = GameObject.Instantiate(uiSituationPrefab, gameCanvas);
-        return uiGO.GetComponent<UISituation>();
-    }
+    public UIButton InstantiateUIButton()=> Instantiate(uiButtonPrefab, gameCanvas).GetComponent<UIButton>();
+    public UIButton InstantiateUIButtonEmpty()=> Instantiate(uiButtonEmptyPrefab, gameCanvas).GetComponent<UIButton>();
+    public UISituation InstantiateUIInstructionEmpty() =>Instantiate(uiInstructionPrefab, gameCanvas).GetComponent<UISituation>();
+    public UISituation InstantiateUISituation() =>Instantiate(uiSituationPrefab, gameCanvas).GetComponent<UISituation>();
 
 
-    public void ChangeTrafficLightTimer(string msg)
-    {
+    public void ChangeTrafficLightTimer(string msg) =>
         trafficLightTimer.text = msg;
-    }
-    public void ChangeRushHour(bool on)
-    {
+    
+    public void ChangeRushHour(bool on) =>
         rushHourText.gameObject.SetActive(on);
-    }
     public void ChangeScore(string score)
     {
         scoreText.text = "SCORE: " + score;
         scoreEndGame.text = "SCORE: " + score;
     }
-    public void ChangeScoreActive(bool on)
-    {
+    public void ChangeScoreActive(bool on) =>
         scoreText.gameObject.SetActive(on);
-    }
-    public void ChangeScoreEndActive(bool on)
-    {
+
+    public void ChangeScoreEndActive(bool on) =>
         scoreEndGame.gameObject.SetActive(on);
-    }
-    public void ChangeNewRecord(bool on)
-    {
+
+    public void ChangeNewRecord(bool on) =>
         newRecordGo.gameObject.SetActive(on);
-    }
-    public void ChangeTapToStart(bool on)
-    {
+
+    public void ChangeTapToStart(bool on) =>
         tapToStart.gameObject.SetActive(on);
-    }
-    public void ChangeEndGameText(string msg)
-    {
+
+    public void ChangeEndGameText(string msg) =>
         endgameText.text = msg;
-    }
 }

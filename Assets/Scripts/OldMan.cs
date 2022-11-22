@@ -25,18 +25,14 @@ public class OldMan : MonoBehaviour
 
     public void Init()
     {
-        if (GameManager.instance.mode == GameMode.TRANSIT || GameManager.instance.mode == GameMode.CAREER)
-        {
-          
-            wp = paths.GetRandom();
-            transform.eulerAngles = Vector3.zero;
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            transform.position = wp.start.position;
-            dir = (wp.end.position - wp.start.position).normalized;
-            transform.LookAt(transform.position + new Vector3(dir.x, 0, dir.z));
-            canMove = true;
-        }
+        wp = paths.GetRandom();
+        transform.eulerAngles = Vector3.zero;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        transform.position = wp.start.position;
+        dir = (wp.end.position - wp.start.position).normalized;
+        transform.LookAt(transform.position + new Vector3(dir.x, 0, dir.z));
+        canMove = true;
     }
 
     public void WalkFaster()

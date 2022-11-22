@@ -6,13 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-public enum GameMode
-{
-   NO_BRAKES,
-   TRANSIT,
-   DRIVER,
-   CAREER,
-}
+
 public enum GameStatus
 {
     SIGN_IN,
@@ -77,7 +71,6 @@ public class GameManager : MonoBehaviour
     public MyLeaderBoard myLeaderboard;
     public AdManager adManager;
 
-    Dictionary<GameMode, GameReward> rewards = new Dictionary<GameMode, GameReward>();
 
     [Header("Game References")]
     public List<Barrier> barriers;
@@ -88,7 +81,6 @@ public class GameManager : MonoBehaviour
     public float cdTap = .5f;
     [ReadOnly] public bool tapEnabled = true;
     public static float globalCarSpeed;
-    public GameMode mode;
 
     public int gameCount;
 
@@ -100,14 +92,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Ui Others")]
     public GameObject gameLights;
-    public GameObject adGo;
     public Image pauseImage;
-    public Text pauseText;
-    public Button freeCoinsBut;
-    public Text freeCoinsTex;
-    public Text pointsText;
-    public Text achievmentRewardText;
-    public Text achievmentLevelText;
+   
 
     [Header("XpTable")]
     public List<int> xpTable;
@@ -116,18 +102,8 @@ public class GameManager : MonoBehaviour
     [Header("Game settings")]
     [Space(10)]
     [Header("Transit")]
-    public float transit_StartFreq;
-    public float transit_MinFreq;
-    public float transit_RushHour;
-    public float transit_Incr;
     public float transit_Speed;
-    [Header("Breaks")]
-    public float brakes_StartFreq;
-    public float brakes_MinFreq;
-    public float brakes_RushHour;
-    public float brakes_Incr;
-    public float brakes_Speed;
-
+   
     public static bool isOnline;
 
     private void Awake()
@@ -138,10 +114,6 @@ public class GameManager : MonoBehaviour
 
         CacheManagers();
 
-
-        rewards.Add(GameMode.CAREER, new GameReward(0.5f, .5f));
-        rewards.Add(GameMode.TRANSIT, new GameReward(0.5f, .5f));
-        rewards.Add(GameMode.NO_BRAKES, new GameReward(.75f, .75f));
     }
 
     void UpdateAfterLoadData(Profile profile)
@@ -387,16 +359,13 @@ public class GameManager : MonoBehaviour
 
     public void OnClickRestart()
     {
-        if (mode == GameMode.TRANSIT)
-            OnClickPlay();
-      
+        OnClickPlay();
         OnGameStart();
     }
 
     //CLICKEA EL BOTON DE MODO TRANSIT
     public void OnClickPlay()
     {
-        mode = GameMode.TRANSIT;
         /*
         spawner.startFreq = transit_StartFreq;
         spawner.minFreq = transit_MinFreq;

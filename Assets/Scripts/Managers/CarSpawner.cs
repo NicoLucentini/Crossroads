@@ -49,12 +49,6 @@ public class CarSpawner : MonoBehaviour
     [Header("CurrentCars")]
     public List<GameObject> currentCars;
 
-    [Header("Queue Spawn")]
-    public GameObject queuePrefab;
-    public Directions queueDirection;
-    public CarType queueType;
-    public bool hasQueue = false;
-
     [Header("Pool")]
     public bool usesPool;
     public CarPool pool;
@@ -132,46 +126,34 @@ public class CarSpawner : MonoBehaviour
 
     }
 
-    public void QueueSpawn(GameObject prefab, Directions dir, CarType type)
-    {
-        queuePrefab = prefab;
-        queueDirection = dir;
-        queueType = type;
-        hasQueue = true;
-    }
-
+    private int carsSpawned = 0;
     void Spawn()
     {
-        GameObject prefab;
         dir = Directions.NONE;
+        carsSpawned++;
+        if (carsSpawned % 5 == 0 && carSpawns.Exists(x=>x.blocked))
+        {
+            carSpawns.FirstOrDefault(x => x.blocked).blocked = false;
+        }
+
         CarSpawn carSpawn = GetCar();
         CarType ct = carSpawn.type;
 
-        if (hasQueue)
+       
+        var prefab = carSpawn.prefab;
+
+        if (nextDir == Directions.NONE)
         {
-            prefab = queuePrefab;
-            dir = queueDirection;
-            hasQueue = false;
-            ct = queueType;
+            int pos = Random.Range(0, 4);
+            dir = (Directions)pos;
+            nextDir = dir;
         }
         else
         {
-        
-            prefab = carSpawn.prefab;
-
-            if (nextDir == Directions.NONE)
-            {
-                int pos = Random.Range(0, 4);
-                dir = (Directions)pos;
-                nextDir = dir;
-            }
-            else
-            {
-                dir = nextDir;
-                int pos = Random.Range(0, 4);
-                nextDir = (Directions)pos;
-              
-            }
+            dir = nextDir;
+            int pos = Random.Range(0, 4);
+            nextDir = (Directions)pos;
+          
         }
 
         Transform spawner = GetSpawner(dir);
@@ -187,9 +169,6 @@ public class CarSpawner : MonoBehaviour
         }
 
         car.Init();
-        car.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-        car.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        car.transform.eulerAngles = Vector3.zero;
         
         car.transform.position = spawner.transform.position;
         car.SetDirection(carDir, dir);
@@ -205,9 +184,8 @@ public class CarSpawner : MonoBehaviour
         Invoke("Spawn", frequency);
     }
 
-   
 
-    public void CalculateFrequency()
+    private void CalculateFrequency()
     {
         otherFreq = 0;
         if (useCurve)
@@ -219,14 +197,9 @@ public class CarSpawner : MonoBehaviour
             frequency = freq;
         }
 
-        if (GameManager.instance.mode == GameMode.TRANSIT || GameManager.instance.mode == GameMode.DRIVER)
-        {
-            if (dir != nextDir)
-                frequency *= otherFreq;
-        }
-
-        if (GameManager.instance.mode == GameMode.NO_BRAKES)
-            frequency *= 2;
+        
+        if (dir != nextDir)
+            frequency *= otherFreq;
     }
 
     public void OnReset()
@@ -236,6 +209,7 @@ public class CarSpawner : MonoBehaviour
         frequency = startFreq;
         tempFreq = startFreq;
         timer = 0;
+        carsSpawned = 0;
         //InvokeRepeating("Spawn", 2, frequency);
 
         Invoke("Spawn", 2);
@@ -255,8 +229,8 @@ public class CarSpawner : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-  
-    public void OnFinish()
+
+    private void OnFinish()
     {
         StopAllCoroutines();
         ClearCars();
@@ -267,7 +241,7 @@ public class CarSpawner : MonoBehaviour
         CancelInvoke("Spawn");
     }
 
-    public void ClearCars()
+    private void ClearCars()
     {
 
         GameObject temp = null;
