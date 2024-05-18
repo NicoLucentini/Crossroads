@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,12 +7,9 @@ using UnityEngine;
 using UnityEngine.Advertisements;
 
 
-public class AdManager : MonoBehaviour
+public class AdManager : MonoBehaviour, IUnityAdsShowListener
 {
-
-    public delegate void OnPositiveResult();
-    public event OnPositiveResult onPositiveResult;
-
+    Action onPositiveResult = null;
 
     [Header("Ad")]
     public int gamesPlayedForAd = 3;
@@ -23,23 +21,21 @@ public class AdManager : MonoBehaviour
     {   
         Advertisement.Initialize("1469859", true);
 	}
-    public void AdShow(OnPositiveResult clbk)
+    public void AdShow(Action clbk)
     {
 #if UNITY_ANDROID
         StartCoroutine(ShowAd(clbk));
 #endif
     }
-    public IEnumerator ShowAd(OnPositiveResult clbk)
+    public IEnumerator ShowAd(Action clbk)
     {
         print("Adv ini: " + Advertisement.isInitialized);
 
-        while (!Advertisement.IsReady())
+        while (!Advertisement.isInitialized)
             yield return new WaitForEndOfFrame();
 
-        ShowOptions so = new ShowOptions();
-        so.resultCallback = OnShowResultado;
         onPositiveResult = clbk;
-        Advertisement.Show("rewardedVideo",so);
+        Advertisement.Show("rewardedVideo",this);
 
         
 
@@ -50,20 +46,27 @@ public class AdManager : MonoBehaviour
             Time.timeScale = currentTimeScale;
 #endif
     }
-     
-        void OnShowResultado(ShowResult sr)
+
+    public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnUnityAdsShowStart(string placementId)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnUnityAdsShowClick(string placementId)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
+    {
+        if (placementId.Equals(placementId) && showCompletionState.Equals(UnityAdsShowCompletionState.COMPLETED))
         {
-            if(sr == ShowResult.Failed)
-            {
-                print("ShowResult.Failed");
-            }
-            else if(sr == ShowResult.Finished)
-            {
-                onPositiveResult?.Invoke();
-            }
-            else if(sr == ShowResult.Skipped)
-            {
-                print("ShowResult.Skipped");
-            }
+            onPositiveResult?.Invoke();
         }
     }
+}
