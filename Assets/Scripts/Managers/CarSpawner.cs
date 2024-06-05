@@ -22,29 +22,12 @@ public class CarSpawner : MonoBehaviour
     public Transform botSpawner;
     public Transform rightSpawner;
     public Transform leftSpawner;
-   
+
 
     [Header("Spawn Frequencies")]
     public float frequency;
-    public float minFreq;
-    public float startFreq;
-    public float freqIncrement;
-    public float tempFreq;
-    public bool useCurve;
 
     public AnimationCurve freqAnimation;
-    public AnimationCurve otherLaneFreq;
-    public float otherFreq;
-    public float timer;
-
-    
-    public Directions nextDir;
-    public Directions dir;
-    [Header("Rush Hourd")]
-    public float rushHourCd;
-    public float rushHourDuration;
-    public bool onRushHour = false;
-    public float rushHourFreqMult;
 
     [Header("CurrentCars")]
     public List<GameObject> currentCars;
@@ -54,10 +37,14 @@ public class CarSpawner : MonoBehaviour
     public CarPool pool;
 
 
+
+    private int carsSpawned = 0;
+
+
     //Dispatch an event every Time.deltaTime
     public static System.Action onTimePassed;
 
-    void Start ()
+    void Start()
     {
         Shop.onCarBuyed += CarChances;
 
@@ -90,48 +77,13 @@ public class CarSpawner : MonoBehaviour
 
     }
 
-    void StartRushHour()
-    {
-        onRushHour = true;
 
-        Invoke("EndRushHour", rushHourDuration);
-
-        tempFreq = frequency;
-        frequency *= rushHourFreqMult;
-        frequency = Mathf.Clamp(frequency, minFreq, startFreq);
-
-        
-        GuiManager.instance.ChangeRushHour(true);
-
-        /*
-        CancelInvoke("Spawn");
-        InvokeRepeating("Spawn", tempFreq, frequency);
-        */
-    }
-    void EndRushHour()
-    {
-        onRushHour = false;
-
-        frequency = tempFreq;
-        frequency -= freqIncrement;
-        frequency = Mathf.Clamp(frequency, minFreq, startFreq);
-        Invoke("StartRushHour", rushHourCd );
-        
-        GuiManager.instance.ChangeRushHour(false);
-
-        /*
-        CancelInvoke("Spawn");
-        InvokeRepeating("Spawn", tempFreq , frequency);
-        */
-
-    }
-
-    private int carsSpawned = 0;
     void Spawn()
     {
+
         dir = Directions.NONE;
         carsSpawned++;
-        if (carsSpawned % 5 == 0 && carSpawns.Exists(x=>x.blocked))
+        if (carsSpawned % 5 == 0 && carSpawns.Exists(x => x.blocked))
         {
             carSpawns.FirstOrDefault(x => x.blocked).blocked = false;
         }
@@ -139,7 +91,7 @@ public class CarSpawner : MonoBehaviour
         CarSpawn carSpawn = GetCar();
         CarType ct = carSpawn.type;
 
-       
+
         var prefab = carSpawn.prefab;
 
         if (nextDir == Directions.NONE)
@@ -153,7 +105,7 @@ public class CarSpawner : MonoBehaviour
             dir = nextDir;
             int pos = Random.Range(0, 4);
             nextDir = (Directions)pos;
-          
+
         }
 
         Transform spawner = GetSpawner(dir);
@@ -169,7 +121,7 @@ public class CarSpawner : MonoBehaviour
         }
 
         car.Init();
-        
+
         car.transform.position = spawner.transform.position;
         car.SetDirection(carDir, dir);
         car.spawner = this;
@@ -179,35 +131,33 @@ public class CarSpawner : MonoBehaviour
 
         currentCars.Add(car.gameObject);
 
-        CalculateFrequency();
+        //CalculateFrequency();
+        RefactorFrequency();
 
         Invoke("Spawn", frequency);
     }
 
 
-    private void CalculateFrequency()
-    {
-        otherFreq = 0;
-        if (useCurve)
-        {
-            var tRes = timer % 25;
-            var t = tRes / 25;
-            var freq = freqAnimation.Evaluate(t);
-            otherFreq = otherLaneFreq.Evaluate(t);
-            frequency = freq;
-        }
+    public float frequencyTimeInSeconds = 60;
+    private Directions dir;
+    private Directions nextDir;
+    private float timer;
 
-        
-        if (dir != nextDir)
-            frequency *= otherFreq;
+    private void RefactorFrequency() {
+
+        var freqPoint = (timer % frequencyTimeInSeconds) / frequencyTimeInSeconds;
+
+        Debug.Log( "Timer "+ timer + ", Freq point " + freqPoint);
+
+        var freqValue = freqAnimation.Evaluate(freqPoint);
+
+        frequency = freqValue;
     }
 
     public void OnReset()
     {
         OnFinish();
 
-        frequency = startFreq;
-        tempFreq = startFreq;
         timer = 0;
         carsSpawned = 0;
         //InvokeRepeating("Spawn", 2, frequency);
@@ -234,7 +184,6 @@ public class CarSpawner : MonoBehaviour
     {
         StopAllCoroutines();
         ClearCars();
-        onRushHour = false;
         GuiManager.instance.ChangeRushHour(false);
         CancelInvoke("EndRushHour");
         CancelInvoke("StartRushHour");
@@ -274,7 +223,7 @@ public class CarSpawner : MonoBehaviour
         }
         return winner;
     }
-    public Transform GetSpawner(Directions dir)
+    private Transform GetSpawner(Directions dir)
     {
         switch (dir)
         {
@@ -285,7 +234,7 @@ public class CarSpawner : MonoBehaviour
         }
         return GetSpawner(Directions.TOP);
     }
-    public Vector3 GetDirection(Directions dir)
+    private Vector3 GetDirection(Directions dir)
     {
         switch (dir)
         {
@@ -297,7 +246,7 @@ public class CarSpawner : MonoBehaviour
         return GetDirection(Directions.TOP);
 
     }
-    public CarSpawn GetCar()
+    private CarSpawn GetCar()
     {
         var unblockedCars = carSpawns.Where(x => !x.blocked).ToList();
         List<int> chances = new List<int>();

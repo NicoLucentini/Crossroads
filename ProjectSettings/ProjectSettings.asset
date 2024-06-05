@@ -820,6 +820,7 @@ PlayerSettings:
     Collab: 0
     ErrorHub: 0
     Hub: 0
+    Purchasing: 0
     UNet: 1
     Unity Ads: 1
   luminIcon:

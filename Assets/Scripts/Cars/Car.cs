@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
+    public static int carCount = 0;
+
     [Header("Status")]
     [ReadOnly]public float timeAlive;
     [ReadOnly]public float speed;
@@ -54,6 +56,8 @@ public class Car : MonoBehaviour
     {
         GameManager.onGameEnd += OnGameEnd;
         canCollide = true;
+        carCount++;
+        gameObject.name = "Car " + carCount;
     }
     public virtual void Init()
     {
@@ -285,10 +289,12 @@ public class Car : MonoBehaviour
             Debug.Log("@OnCarCollision");
             canCollide = false;
             GameManager.instance.OnCarCollision();
-            if(timeAlive> 2)
+            if (timeAlive > 2)
                 GuiManager.instance.ChangeEndGameText("DONT LET CARS CRASH!!!");
-            else
+            else {
+                Debug.Log("Car " + gameObject.name + " crashed " + gameObject.name);
                 GuiManager.instance.ChangeEndGameText("DONT LET CARS STACK!!!");
+            }
         }
         if (collision.gameObject.layer == Layers.PEOPLE)
         {
